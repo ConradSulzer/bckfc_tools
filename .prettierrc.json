@@ -1,0 +1,15 @@
+{
+  "plugins": ["@prettier/plugin-php"],
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "overrides": [
+    {
+      "files": "*.php",
+      "options": {
+        "tabWidth": 4,
+        "phpVersion": "8.2"
+      }
+    }
+  ]
+}
