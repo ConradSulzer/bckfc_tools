@@ -15,3 +15,9 @@ require_once __DIR__ . '/includes/ExportController.php';
 add_action('admin_menu', [BCKFC\Tools\Admin::class, 'menu']);
 add_action('admin_enqueue_scripts', [BCKFC\Tools\Admin::class, 'assets']);
 add_action('rest_api_init', [BCKFC\Tools\ExportController::class, 'register']);
+
+require_once __DIR__ . '/includes/TournamentSettings.php';
+require_once __DIR__ . '/includes/EventEditor.php';
+require_once __DIR__ . '/includes/TicketEditor.php';
+BCKFC\Tools\EventEditor::registerHooks();
+BCKFC\Tools\TicketEditor::registerHooks();
