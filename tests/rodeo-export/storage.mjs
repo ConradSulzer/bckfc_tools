@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import ts from 'typescript';
 
 const source = readFileSync(
-  new URL('../src/features/rodeo-export/storage.ts', import.meta.url),
+  new URL('../../src/features/rodeo-export/storage.ts', import.meta.url),
   'utf8',
 );
 const compiled = ts.transpileModule(source, {

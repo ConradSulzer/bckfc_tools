@@ -1,5 +1,5 @@
 <?php
-namespace BCKFC\Tools;
+namespace BCKFC\Tools\RodeoExport;
 
 final class ExportController
 {

@@ -1,5 +1,5 @@
 <?php
-namespace BCKFC\Tools;
+namespace BCKFC\Tools\Events;
 
 /** WordPress event editor UI and request handling. No custom tables or duplicate event records. */
 final class EventEditor
@@ -33,9 +33,9 @@ final class EventEditor
 
     wp_enqueue_script(
       'bckfc-event-fields',
-      plugins_url('assets/event-fields.js', dirname(__DIR__) . '/bckfc-tools.php'),
+      plugins_url('assets/events/event-fields.js', dirname(__DIR__, 2) . '/bckfc-tools.php'),
       [],
-      (string) filemtime(dirname(__DIR__) . '/assets/event-fields.js'),
+      (string) filemtime(dirname(__DIR__, 2) . '/assets/events/event-fields.js'),
       true,
     );
   }

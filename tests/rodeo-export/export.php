@@ -1,8 +1,8 @@
 <?php
-require __DIR__ . '/../includes/RodeoExport.php';
-require __DIR__ . '/../includes/ExportSettings.php';
-use BCKFC\Tools\RodeoExport;
-use BCKFC\Tools\ExportSettings;
+require __DIR__ . '/../../includes/rodeo-export/RodeoExport.php';
+require __DIR__ . '/../../includes/rodeo-export/ExportSettings.php';
+use BCKFC\Tools\RodeoExport\RodeoExport;
+use BCKFC\Tools\RodeoExport\ExportSettings;
 
 function check(bool $condition, string $message): void
 {

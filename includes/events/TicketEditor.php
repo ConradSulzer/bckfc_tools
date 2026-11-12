@@ -1,5 +1,5 @@
 <?php
-namespace BCKFC\Tools;
+namespace BCKFC\Tools\Events;
 
 /** Extends Tickets Plus through its ticket form and save hooks. */
 final class TicketEditor

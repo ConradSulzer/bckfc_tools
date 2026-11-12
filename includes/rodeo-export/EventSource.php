@@ -1,5 +1,5 @@
 <?php
-namespace BCKFC\Tools;
+namespace BCKFC\Tools\RodeoExport;
 
 /** Event Tickets Plus / WooCommerce data access; never modifies tickets or orders. */
 final class EventSource

@@ -1,5 +1,5 @@
 <?php
-namespace BCKFC\Tools;
+namespace BCKFC\Tools\Events;
 
 /** Shared meanings and metadata on existing WordPress events and WooCommerce tickets. */
 final class TournamentSettings

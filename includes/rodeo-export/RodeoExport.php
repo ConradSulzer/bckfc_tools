@@ -1,5 +1,5 @@
 <?php
-namespace BCKFC\Tools;
+namespace BCKFC\Tools\RodeoExport;
 
 /** Pure transformation shared by the preview and download. */
 final class RodeoExport

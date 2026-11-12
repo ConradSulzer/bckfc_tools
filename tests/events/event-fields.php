@@ -1,8 +1,8 @@
 <?php
-/** Run after bootstrapping local WordPress, e.g. php -r 'require ".../wp-load.php"; require "tests/event-fields.php";'. */
-use BCKFC\Tools\TournamentSettings as Settings;
-use BCKFC\Tools\EventEditor;
-use BCKFC\Tools\TicketEditor;
+/** Run after bootstrapping local WordPress, e.g. php -r 'require ".../wp-load.php"; require "tests/events/event-fields.php";'. */
+use BCKFC\Tools\Events\TournamentSettings as Settings;
+use BCKFC\Tools\Events\EventEditor;
+use BCKFC\Tools\Events\TicketEditor;
 
 if (!defined('ABSPATH') || wp_get_environment_type() !== 'local') {
     throw new RuntimeException('This integration check requires the local WordPress site.');
