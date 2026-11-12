@@ -49,6 +49,11 @@ final class TournamentSettings
 
         return [
             'format' => (string) get_post_meta($id, '_bckfc_format', true),
+            'registration_closes' => (string) get_post_meta(
+                $id,
+                '_bckfc_registration_closes',
+                true,
+            ),
             'series' => $series,
             'championship' => $series && (bool) get_post_meta($id, '_bckfc_championship', true),
         ];
@@ -56,6 +61,12 @@ final class TournamentSettings
 
     public static function saveEventSettings(int $id, array $input): void
     {
+        $registrationCloses = $input['registration_closes'] ?? null;
+
+        if ($registrationCloses !== null && $registrationCloses !== '') {
+            self::parseRegistrationCloseDate($id, $registrationCloses);
+        }
+
         $format = $input['format'] ?? '';
 
         if (!in_array($format, ['', 'weigh_in', 'cpr_cps'], true)) {
@@ -93,13 +104,77 @@ final class TournamentSettings
             throw new \RuntimeException($result->get_error_message());
         }
 
+        if (isset($input['locations']) && is_array($input['locations'])) {
+            update_post_meta(
+                $id,
+                '_bckfc_locations',
+                self::sanitizeEventLocations($input['locations']),
+            );
+        }
+
         update_post_meta($id, '_bckfc_format', $format);
+
+        if ($registrationCloses !== null) {
+            update_post_meta($id, '_bckfc_registration_closes', $registrationCloses);
+        }
 
         update_post_meta(
             $id,
             '_bckfc_championship',
             $series && !empty($input['championship']) ? 1 : 0,
         );
+    }
+
+    public static function getRegistrationCloseDate(int $eventId): ?\DateTimeImmutable
+    {
+        $value = get_post_meta($eventId, '_bckfc_registration_closes', true);
+
+        return $value === '' ? null : self::parseRegistrationCloseDate($eventId, $value);
+    }
+
+    private static function parseRegistrationCloseDate(int $eventId, $value): \DateTimeImmutable
+    {
+        $timezone = \Tribe__Timezones::build_timezone_object(
+            \Tribe__Events__Timezones::get_event_timezone_string($eventId),
+        );
+        $date = is_string($value)
+            ? \DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $value, $timezone)
+            : false;
+
+        if (!$date || $date->format('Y-m-d\TH:i') !== $value) {
+            throw new \InvalidArgumentException(
+                'Choose a valid Registration Closes date and time.',
+            );
+        }
+
+        return $date;
+    }
+
+    public static function getEventLocations(int $eventId): array
+    {
+        $values = get_post_meta($eventId, '_bckfc_locations', false);
+
+        return self::sanitizeEventLocations($values[0] ?? []);
+    }
+
+    public static function sanitizeEventLocations($input): array
+    {
+        $input = is_array($input) ? $input : [];
+        $locations = [];
+
+        foreach (['fishing', 'weigh_in'] as $group) {
+            $fields = is_array($input[$group] ?? null) ? $input[$group] : [];
+
+            foreach (['name', 'location', 'address', 'notes'] as $field) {
+                $value = is_string($fields[$field] ?? null) ? $fields[$field] : '';
+                $locations[$group][$field] =
+                    $field === 'notes'
+                        ? sanitize_textarea_field($value)
+                        : sanitize_text_field($value);
+            }
+        }
+
+        return $locations;
     }
 
     public static function getTicketSettings(int $id): array

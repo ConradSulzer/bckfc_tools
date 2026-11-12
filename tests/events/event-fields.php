@@ -1,7 +1,7 @@
 <?php
 /** Run after bootstrapping local WordPress, e.g. php -r 'require ".../wp-load.php"; require "tests/events/event-fields.php";'. */
 use BCKFC\Tools\Events\TournamentSettings as Settings;
-use BCKFC\Tools\Events\EventEditor;
+use BCKFC\Tools\Events\TournamentSettingsPanel;
 use BCKFC\Tools\Events\TicketEditor;
 
 if (!defined('ABSPATH') || wp_get_environment_type() !== 'local') {
@@ -60,14 +60,32 @@ try {
     wp_set_object_terms($event, [(int) $unrelated], Settings::TAXONOMY);
 
     fieldCheck(
-        Settings::getEventSettings($event) === ['format' => '', 'series' => [], 'championship' => false],
+        Settings::getEventSettings($event) === [
+            'format' => '',
+            'registration_closes' => '',
+            'series' => [],
+            'championship' => false,
+        ],
         'Existing events have no format, series or Championship flag.',
     );
 
     $input = [
         'format' => 'weigh_in',
+        'registration_closes' => '2027-03-19T20:00',
         'series' => $series,
         'championship' => '1',
+        'locations' => [
+            'fishing' => [
+                'location' => 'Louisiana Statewide',
+                'notes' => "Launch anywhere.\nObserve boundaries.",
+            ],
+            'weigh_in' => [
+                'name' => "Pip's",
+                'location' => 'St. Bernard Parish',
+                'address' => '29.123, -90.456',
+                'notes' => '<b>Meet at pavilion.</b>',
+            ],
+        ],
     ];
 
     $_POST = [
@@ -78,8 +96,42 @@ try {
     wp_update_post(['ID' => $event, 'post_title' => 'BCKFC fields saved check']);
     $saved = Settings::getEventSettings($event);
 
+    update_post_meta($event, '_EventTimezone', 'America/Chicago');
+    $deadline = Settings::getRegistrationCloseDate($event);
+
     fieldCheck(
-        $saved['format'] === 'weigh_in' && $saved['championship'] && $saved['series'] === [(int) $series],
+        $saved['registration_closes'] === '2027-03-19T20:00' &&
+            $deadline->format('Y-m-d H:i T') === '2027-03-19 20:00 CDT',
+        'Registration deadline saves and uses the event timezone at the deadline.',
+    );
+
+    foreach (['2027-02-30T20:00', '2027-03-14T02:30', 'Friday', []] as $invalidDeadline) {
+        try {
+            Settings::saveEventSettings(
+                $event,
+                array_replace($input, ['registration_closes' => $invalidDeadline]),
+            );
+            throw new RuntimeException('Invalid registration deadline accepted.');
+        } catch (InvalidArgumentException $e) {
+        }
+    }
+
+    fieldCheck(
+        Settings::getEventSettings($event)['registration_closes'] === $input['registration_closes'],
+        'Invalid calendar dates and nonexistent DST times preserve the saved deadline.',
+    );
+
+    Settings::saveEventSettings($event, array_replace($input, ['registration_closes' => '']));
+    fieldCheck(
+        Settings::getRegistrationCloseDate($event) === null,
+        'Blank clears registration deadline.',
+    );
+    Settings::saveEventSettings($event, $input);
+
+    fieldCheck(
+        $saved['format'] === 'weigh_in' &&
+            $saved['championship'] &&
+            $saved['series'] === [(int) $series],
         'Real post save assigns series and Championship.',
     );
 
@@ -88,6 +140,17 @@ try {
         'Unrelated event category is preserved.',
     );
 
+    $savedLocations = Settings::getEventLocations($event);
+    fieldCheck(
+        $savedLocations['fishing']['name'] === '' &&
+            $savedLocations['fishing']['location'] === 'Louisiana Statewide' &&
+            $savedLocations['weigh_in']['name'] === "Pip's" &&
+            $savedLocations['weigh_in']['address'] === '29.123, -90.456' &&
+            $savedLocations['weigh_in']['notes'] === 'Meet at pavilion.',
+        'Location groups save independently, preserve apostrophes/coordinates and sanitize notes.',
+    );
+
+    $_POST['bckfc_event']['locations'] = [];
     $_POST['bckfc_event_nonce'] = 'invalid';
     $_POST['bckfc_event']['series'] = 0;
     wp_update_post(['ID' => $event, 'post_title' => 'BCKFC fields nonce check']);
@@ -104,6 +167,11 @@ try {
     fieldCheck(
         Settings::getEventSettings($event)['championship'],
         'Missing capability does not save settings.',
+    );
+
+    fieldCheck(
+        Settings::getEventLocations($event) === $savedLocations,
+        'Unauthorized saves preserve locations.',
     );
 
     wp_set_current_user((int) $admin[0]);
@@ -127,7 +195,7 @@ try {
     );
 
     ob_start();
-    EventEditor::renderTournamentSettings(get_post($event));
+    TournamentSettingsPanel::renderTournamentSettings(get_post($event));
     $html = ob_get_clean();
 
     fieldCheck(
@@ -146,7 +214,10 @@ try {
         'Native category removal clears Championship.',
     );
 
-    Settings::saveEventSettings($event, array_replace($input, ['format' => 'cpr_cps', 'series' => 0]));
+    Settings::saveEventSettings(
+        $event,
+        array_replace($input, ['format' => 'cpr_cps', 'series' => 0]),
+    );
 
     fieldCheck(Settings::getEventSettings($event)['format'] === 'cpr_cps', 'CPR/CPS format saves.');
 

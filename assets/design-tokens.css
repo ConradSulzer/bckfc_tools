@@ -1,0 +1,8 @@
+/* Shared brand colors; the event wrapper also supplies them to full-width backgrounds. */
+.bckfc,
+.bckfc-event-page {
+  --bckfc-orange: #f47b20;
+  --bckfc-blue: #2479ac;
+  --bckfc-ink: #163445;
+  --bckfc-tan: #f8f5ed;
+}

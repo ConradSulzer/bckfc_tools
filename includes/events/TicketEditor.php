@@ -30,7 +30,7 @@ final class TicketEditor
         echo '<div class="input_block"><label class="ticket_form_label ticket_form_left" for="bckfc-ticket-purpose">BCKFC Type:</label><select class="ticket_field ticket_form_right" id="bckfc-ticket-purpose" name="bckfc_ticket[purpose]">';
 
         foreach (TournamentSettings::PURPOSES as $value => $label) {
-            EventEditor::renderSelectOption($value, $label, $settings['purpose']);
+            TournamentSettingsPanel::renderSelectOption($value, $label, $settings['purpose']);
         }
 
         echo '</select></div>';
@@ -63,7 +63,7 @@ final class TicketEditor
         try {
             TournamentSettings::saveTicketSettings((int) $ticket->ID, $data['bckfc_ticket']);
         } catch (\InvalidArgumentException $e) {
-            EventEditor::queueAdminErrorNotice(
+            TournamentSettingsPanel::queueAdminErrorNotice(
                 'The ticket was saved, but its BCKFC settings were not: ' . $e->getMessage(),
             );
         }
