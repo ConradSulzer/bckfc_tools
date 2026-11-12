@@ -60,17 +60,14 @@ try {
     wp_set_object_terms($event, [(int) $unrelated], Settings::TAXONOMY);
 
     fieldCheck(
-        Settings::getEventSettings($event)['format'] === '',
-        'Existing events are not automatically classified.',
+        Settings::getEventSettings($event) === ['format' => '', 'series' => [], 'championship' => false],
+        'Existing events have no format, series or Championship flag.',
     );
 
     $input = [
         'format' => 'weigh_in',
         'series' => $series,
         'championship' => '1',
-        'introduction' => "An angler's tournament",
-        'announcement' => 'New date',
-        'registration_url' => 'https://example.test/register',
     ];
 
     $_POST = [
@@ -82,13 +79,8 @@ try {
     $saved = Settings::getEventSettings($event);
 
     fieldCheck(
-        $saved['championship'] && $saved['series'] === [(int) $series],
+        $saved['format'] === 'weigh_in' && $saved['championship'] && $saved['series'] === [(int) $series],
         'Real post save assigns series and Championship.',
-    );
-
-    fieldCheck(
-        $saved['introduction'] === "An angler's tournament",
-        'Event text is unslashed once.',
     );
 
     fieldCheck(
@@ -97,11 +89,11 @@ try {
     );
 
     $_POST['bckfc_event_nonce'] = 'invalid';
-    $_POST['bckfc_event']['format'] = 'cpr_cps';
+    $_POST['bckfc_event']['series'] = 0;
     wp_update_post(['ID' => $event, 'post_title' => 'BCKFC fields nonce check']);
 
     fieldCheck(
-        Settings::getEventSettings($event)['format'] === 'weigh_in',
+        Settings::getEventSettings($event)['championship'],
         'Invalid nonce does not save settings.',
     );
 
@@ -110,7 +102,7 @@ try {
     wp_update_post(['ID' => $event, 'post_title' => 'BCKFC fields permissions check']);
 
     fieldCheck(
-        Settings::getEventSettings($event)['format'] === 'weigh_in',
+        Settings::getEventSettings($event)['championship'],
         'Missing capability does not save settings.',
     );
 
@@ -118,7 +110,10 @@ try {
     $_POST = [];
     wp_update_post(['ID' => $event, 'post_title' => 'BCKFC fields no form check']);
 
-    fieldCheck(Settings::getEventSettings($event)['championship'], 'Unrelated saves preserve settings.');
+    fieldCheck(
+        Settings::getEventSettings($event)['championship'],
+        'Unrelated saves preserve settings.',
+    );
 
     try {
         Settings::saveEventSettings($event, array_replace($input, ['series' => $unrelated]));
@@ -136,7 +131,11 @@ try {
     $html = ob_get_clean();
 
     fieldCheck(
-        str_contains($html, '> Championship</label>') && str_contains($html, 'CPR/CPS'),
+        str_contains($html, '> This event is the Championship</label>') &&
+            str_contains($html, 'Championship Series:') &&
+            str_contains($html, 'bckfc-format') &&
+            str_contains($html, 'CPR/CPS') &&
+            !str_contains($html, 'bckfc-introduction'),
         'Event editor renders agreed labels.',
     );
 
@@ -149,9 +148,17 @@ try {
 
     Settings::saveEventSettings($event, array_replace($input, ['format' => 'cpr_cps', 'series' => 0]));
 
-    fieldCheck(!Settings::getEventSettings($event)['championship'], 'No series cannot be a Championship.');
+    fieldCheck(Settings::getEventSettings($event)['format'] === 'cpr_cps', 'CPR/CPS format saves.');
 
-    fieldCheck(Settings::getTicketSettings(0) === ['purpose' => 'other'], 'New tickets default to Other.');
+    fieldCheck(
+        !Settings::getEventSettings($event)['championship'],
+        'No series cannot be a Championship.',
+    );
+
+    fieldCheck(
+        Settings::getTicketSettings(0) === ['purpose' => 'other'],
+        'New tickets default to Other.',
+    );
 
     $provider = tribe('tickets-plus.commerce.woo');
     $data = [

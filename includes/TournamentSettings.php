@@ -40,15 +40,17 @@ final class TournamentSettings
 
         $series = is_wp_error($terms)
             ? []
-            : array_values(array_intersect(array_column(self::getChampionshipSeriesCategories(), 'term_id'), $terms));
+            : array_values(
+                array_intersect(
+                    array_column(self::getChampionshipSeriesCategories(), 'term_id'),
+                    $terms,
+                ),
+            );
 
         return [
             'format' => (string) get_post_meta($id, '_bckfc_format', true),
             'series' => $series,
             'championship' => $series && (bool) get_post_meta($id, '_bckfc_championship', true),
-            'introduction' => (string) get_post_meta($id, '_bckfc_introduction', true),
-            'announcement' => (string) get_post_meta($id, '_bckfc_announcement', true),
-            'registration_url' => (string) get_post_meta($id, '_bckfc_registration_url', true),
         ];
     }
 
@@ -61,33 +63,15 @@ final class TournamentSettings
         }
 
         $series = filter_var($input['series'] ?? 0, FILTER_VALIDATE_INT);
-        $ids = array_map('intval', array_column(self::getChampionshipSeriesCategories(), 'term_id'));
+        $ids = array_map(
+            'intval',
+            array_column(self::getChampionshipSeriesCategories(), 'term_id'),
+        );
 
         if ($series === false || ($series !== 0 && !in_array($series, $ids, true))) {
             throw new \InvalidArgumentException(
                 'Choose a yearly category under Championship Series.',
             );
-        }
-
-        foreach (['introduction', 'announcement', 'registration_url'] as $field) {
-            if (isset($input[$field]) && !is_string($input[$field])) {
-                throw new \InvalidArgumentException(
-                    'Submit text for the event description and registration link.',
-                );
-            }
-        }
-
-        $url = trim($input['registration_url'] ?? '');
-
-        if ($url !== '' && !filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException('Enter a complete registration URL.');
-        }
-
-        if (
-            $url !== '' &&
-            !in_array(strtolower(parse_url($url, PHP_URL_SCHEME) ?? ''), ['https', 'http'], true)
-        ) {
-            throw new \InvalidArgumentException('Registration links must use https or http.');
         }
 
         $existing = wp_get_object_terms($id, self::TAXONOMY, ['fields' => 'ids']);
@@ -116,20 +100,6 @@ final class TournamentSettings
             '_bckfc_championship',
             $series && !empty($input['championship']) ? 1 : 0,
         );
-
-        update_post_meta(
-            $id,
-            '_bckfc_introduction',
-            sanitize_textarea_field($input['introduction'] ?? ''),
-        );
-
-        update_post_meta(
-            $id,
-            '_bckfc_announcement',
-            sanitize_textarea_field($input['announcement'] ?? ''),
-        );
-
-        update_post_meta($id, '_bckfc_registration_url', esc_url_raw($url));
     }
 
     public static function getTicketSettings(int $id): array

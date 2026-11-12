@@ -52,8 +52,9 @@ final class EventEditor
     self::renderSelectOption('', 'Not Set', $settings['format']);
     self::renderSelectOption('weigh_in', 'Weigh-in', $settings['format']);
     self::renderSelectOption('cpr_cps', 'CPR/CPS', $settings['format']);
+    echo '</select></td></tr>';
 
-    echo '</select></td></tr><tr><td><label for="bckfc-series">Championship Series:</label></td><td><select id="bckfc-series" name="bckfc_event[series]">';
+    echo '<tr><td><label for="bckfc-series">Championship Series:</label></td><td><select id="bckfc-series" name="bckfc_event[series]">';
     self::renderSelectOption('0', 'None', (string) ($settings['series'][0] ?? 0));
 
     foreach ($series as $term) {
@@ -72,9 +73,7 @@ final class EventEditor
 
     if (!$series) {
       echo '<p class="description">In <a href="' .
-        esc_url(
-          admin_url('edit-tags.php?taxonomy=tribe_events_cat&post_type=tribe_events'),
-        ) .
+        esc_url(admin_url('edit-tags.php?taxonomy=tribe_events_cat&post_type=tribe_events')) .
         '">Event Categories</a>, create a parent named Championship Series with slug championship-series, then place yearly categories beneath it. Existing yearly categories can be moved under that parent.</p>';
     }
 
@@ -82,28 +81,8 @@ final class EventEditor
       (!$settings['series'] ? ' hidden' : '') .
       '><td></td><td><label><input type="checkbox" name="bckfc_event[championship]" value="1"' .
       checked($settings['championship'], true, false) .
-      '> Championship</label></td></tr>';
+      '> This event is the Championship</label></td></tr>';
 
-    foreach (
-      ['introduction' => 'Short Introduction', 'announcement' => 'Announcement (Optional)']
-      as $key => $label
-    ) {
-      echo '<tr><td><label for="bckfc-' .
-        esc_attr($key) .
-        '">' .
-        esc_html($label) .
-        ':</label></td><td><textarea rows="3" id="bckfc-' .
-        esc_attr($key) .
-        '" name="bckfc_event[' .
-        esc_attr($key) .
-        ']">' .
-        esc_textarea($settings[$key]) .
-        '</textarea></td></tr>';
-    }
-
-    echo '<tr><td><label for="bckfc-registration-url">External Registration URL (Optional):</label></td><td><input class="large-text" type="url" id="bckfc-registration-url" name="bckfc_event[registration_url]" value="' .
-      esc_attr($settings['registration_url']) .
-      '" placeholder="https://"><p class="description">For example, the event’s TourneyX registration page.</p></td></tr>';
     echo '</tbody></table>';
   }
 
@@ -152,8 +131,12 @@ final class EventEditor
     }
   }
 
-  public static function clearChampionshipWhenSeriesRemoved(int $id, $terms, array $ttIds, string $taxonomy): void
-  {
+  public static function clearChampionshipWhenSeriesRemoved(
+    int $id,
+    $terms,
+    array $ttIds,
+    string $taxonomy,
+  ): void {
     if (
       $taxonomy === TournamentSettings::TAXONOMY &&
       get_post_type($id) === 'tribe_events' &&
