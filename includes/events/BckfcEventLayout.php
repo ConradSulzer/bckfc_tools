@@ -19,6 +19,9 @@ final class BckfcEventLayout
    * secondary_label   string / ''       Second button text; both text and link are required.
    * secondary_url     string / ''       Second button URL or section anchor.
    * ticket_notice     string / ''       Optional message above the native ticket forms.
+   * entry_fee         string / ''       Display price, such as $35, From $35 or Free.
+   * format_label      string / ''       Display wording for the tournament format.
+   * rules_url         string / ''       Optional rules URL or section anchor.
    * 
    */
   public const LAYOUT_SETTINGS_KEY = '_bckfc_event_layout';
@@ -84,14 +87,23 @@ final class BckfcEventLayout
     $settings = ['template' => ($input['template'] ?? '') === 'bckfc' ? 'bckfc' : ''];
 
     foreach (
-      ['eyebrow', 'intro', 'alert', 'primary_label', 'secondary_label', 'ticket_notice']
+      [
+        'eyebrow',
+        'intro',
+        'alert',
+        'primary_label',
+        'secondary_label',
+        'ticket_notice',
+        'entry_fee',
+        'format_label',
+      ]
       as $key
     ) {
       $value = $input[$key] ?? '';
       $settings[$key] = is_string($value) ? sanitize_textarea_field($value) : '';
     }
 
-    foreach (['primary_url', 'secondary_url'] as $key) {
+    foreach (['primary_url', 'secondary_url', 'rules_url'] as $key) {
       $value = $input[$key] ?? '';
       $settings[$key] = is_string($value) ? esc_url_raw($value) : '';
     }
@@ -203,6 +215,23 @@ final class BckfcEventLayout
       $settings['secondary_url'] !== '';
 
     include dirname(__DIR__, 2) . '/templates/events/header.php';
+  }
+
+  public static function renderEventHighlights(int $eventId): void
+  {
+    $settings = self::getLayoutSettings($eventId);
+    $registrationCloses = TournamentSettings::getRegistrationCloseDate($eventId);
+
+    if (
+      $settings['entry_fee'] === '' &&
+      $settings['format_label'] === '' &&
+      !$registrationCloses &&
+      $settings['rules_url'] === ''
+    ) {
+      return;
+    }
+
+    include dirname(__DIR__, 2) . '/templates/events/highlights.php';
   }
 
   public static function renderRegistrationDeadline(): void

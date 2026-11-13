@@ -30,6 +30,34 @@ update_post_meta($eventId, '_EventStartDateUTC', '2099-03-20 11:00:00');
 update_post_meta($eventId, '_EventEndDateUTC', '2099-03-20 22:00:00');
 
 try {
+    ob_start();
+    BckfcEventLayout::renderEventHighlights($eventId);
+    layoutCheck(ob_get_clean() === '', 'Omit the highlights bar when all values are empty.');
+
+    update_post_meta($eventId, BckfcEventLayout::LAYOUT_SETTINGS_KEY, [
+        'entry_fee' => 'From $35',
+        'format_label' => 'Catch, Photo, Submit',
+        'rules_url' => '#rules',
+    ]);
+    update_post_meta($eventId, '_bckfc_registration_closes', '2099-03-19T20:05');
+
+    ob_start();
+    BckfcEventLayout::renderEventHighlights($eventId);
+    $highlights = ob_get_clean();
+
+    layoutCheck(
+        str_contains($highlights, 'From $35') &&
+        str_contains($highlights, 'Catch, Photo, Submit') &&
+        str_contains($highlights, 'href="#rules"') &&
+        str_contains($highlights, 'Mar 19') &&
+        str_contains($highlights, '8:05 PM') &&
+        str_contains($highlights, '2099-03-19T20:05:00-05:00'),
+        'Highlights show editable values, rules anchor and the deadline in event-local time.',
+    );
+
+    delete_post_meta($eventId, BckfcEventLayout::LAYOUT_SETTINGS_KEY);
+    delete_post_meta($eventId, '_bckfc_registration_closes');
+
     layoutCheck(
         !BckfcEventLayout::usesCustomTemplate($eventId),
         'Existing events retain their default template.',

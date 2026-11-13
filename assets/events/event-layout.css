@@ -1,5 +1,5 @@
 /* Let this layout own vertical spacing and extend section backgrounds without horizontal scrolling. */
-#main:has(.bckfc-event-page) {
+#wrapper #main:has(.bckfc-event-page) {
   padding-top: 0;
   padding-bottom: 0;
   overflow-x: clip;
@@ -117,6 +117,97 @@
   max-height: 520px;
   object-fit: contain;
   border-radius: 5px;
+}
+.bckfc-event-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  background: var(--bckfc-orange);
+  border-image: linear-gradient(var(--bckfc-orange), var(--bckfc-orange)) fill 0 / 0 / 0 100vw;
+  color: white;
+}
+.bckfc-event-highlight {
+  display: grid;
+  grid-template-rows: 24px 1fr auto;
+  justify-items: center;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px;
+  text-align: center;
+  font-family: var(--bckfc-font-heading);
+  border-bottom: 1px solid rgb(255 255 255 / 25%);
+}
+.bckfc-event-highlight:nth-child(odd) {
+  border-right: 1px solid rgb(255 255 255 / 25%);
+}
+.bckfc-event-highlight:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  border-right: 0;
+}
+.bckfc-event-highlight > svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.bckfc-event-highlight__value {
+  font-size: clamp(1rem, 1.8vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.25;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+time.bckfc-event-highlight__value span {
+  display: inline-block;
+}
+.bckfc-event-highlight__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.bckfc-event-highlight__value svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.bckfc-event-highlight--link .bckfc-event-highlight__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+#tribe-events-content a.bckfc-event-highlight--link {
+  color: white;
+  text-decoration: none;
+}
+.bckfc-event-highlight--link:hover {
+  background: rgb(255 255 255 / 12%);
+}
+.bckfc-event-highlight--link:focus-visible {
+  outline: 2px solid var(--bckfc-ink);
+  outline-offset: -4px;
+}
+.bckfc-event-body [id] {
+  scroll-margin-top: 120px;
+}
+@media (min-width: 768px) {
+  .bckfc-event-highlights {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+  .bckfc-event-highlight {
+    padding: 12px 20px;
+    border-bottom: 0;
+  }
+  .bckfc-event-highlight:not(:last-child) {
+    border-right: 1px solid rgb(255 255 255 / 25%);
+  }
+  .bckfc-event-highlight:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
 }
 .bckfc-event-body {
   padding: 32px 0;
@@ -443,6 +534,15 @@
   content: none;
 }
 @media (max-width: 767px) {
+  #wrapper #main:has(.bckfc-event-page) {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  #content:has(.bckfc-event-page) {
+    margin-bottom: 0;
+  }
+
   /* Keep the native dialog within the visible viewport, including the admin bar. */
   #main #bckfc-tickets .tribe-dialog {
     top: var(--wp-admin--admin-bar--height, 0px);

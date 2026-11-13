@@ -52,6 +52,7 @@ defined('ABSPATH') || exit();
 
     // Load the header
     BckfcEventLayout::renderEventHeader(get_the_ID(), $hasTicketPicker);
+    BckfcEventLayout::renderEventHighlights(get_the_ID());
     ?>
     <?= $contentMarkup ?>
     <?php if ($afterContentMarkup !== ''): ?>

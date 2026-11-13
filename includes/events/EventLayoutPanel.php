@@ -57,6 +57,7 @@ final class EventLayoutPanel
     $tabs = [
       'layout' => 'Layout',
       'header' => 'Event Header',
+      'highlights' => 'Highlights',
       'registration' => 'Registration',
     ];
 
@@ -122,6 +123,18 @@ final class EventLayoutPanel
                 true,
                 'Optional. Appears with a warning icon.',
               );
+              ?>
+            </tbody>
+          </table>
+        </div>
+        <div role="tabpanel" id="bckfc-panel-highlights" aria-labelledby="bckfc-tab-highlights" hidden>
+          <p>Registration Closes comes from Tournament Settings → General. Leave other fields blank to omit them.</p>
+          <table class="form-table">
+            <tbody>
+              <?php
+              self::renderTextField('entry_fee', 'Entry Fee', $settings, false, 'For example: $35, From $35, or Free.');
+              self::renderTextField('format_label', 'Format', $settings, false, 'For example: Live Weigh-In or Catch, Photo, Submit.');
+              self::renderTextField('rules_url', 'Rules Link', $settings, false, 'Enter a URL or #rules. For #rules, give your rules section the CSS ID rules in Avada Builder.');
               ?>
             </tbody>
           </table>
