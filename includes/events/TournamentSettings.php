@@ -1,20 +1,20 @@
 <?php
 namespace BCKFC\Tools\Events;
 
-/** Shared meanings and metadata on existing WordPress events and WooCommerce tickets. */
+/** Tournament settings stored on existing WordPress events. */
 final class TournamentSettings
 {
     public const TAXONOMY = 'tribe_events_cat';
     public const SERIES_PARENT = 'championship-series';
-    public const PURPOSES = [
-        'entry' => 'Entry',
-        'youth_entry' => 'Youth Entry',
-        'calcutta' => 'Calcutta',
-        'raffle' => 'Raffle',
-        'season_pass' => 'Season Pass',
-        'food_fun' => 'Food & Fun',
-        'merchandise' => 'Merchandise',
-        'other' => 'Other',
+    // Optional HH:MM values on the event day, in the event timezone.
+    public const TIME_FIELDS = [
+        'launch' => 'Launch',
+        'shotgun_launch' => 'Shotgun Launch',
+        'lines_in' => 'Lines In',
+        'lines_out' => 'Lines Out',
+        'submission_cutoff' => 'Submission Cutoff',
+        'scales_open' => 'Scales Open',
+        'scales_close' => 'Scales Close',
     ];
 
     public static function getChampionshipSeriesCategories(): array
@@ -61,6 +61,7 @@ final class TournamentSettings
 
     public static function saveEventSettings(int $id, array $input): void
     {
+        $times = isset($input['times']) ? self::normalizeEventTimes($input['times']) : null;
         $registrationCloses = $input['registration_closes'] ?? null;
 
         if ($registrationCloses !== null && $registrationCloses !== '') {
@@ -114,6 +115,10 @@ final class TournamentSettings
 
         update_post_meta($id, '_bckfc_format', $format);
 
+        if ($times !== null) {
+            update_post_meta($id, '_bckfc_times', $times);
+        }
+
         if ($registrationCloses !== null) {
             update_post_meta($id, '_bckfc_registration_closes', $registrationCloses);
         }
@@ -123,6 +128,37 @@ final class TournamentSettings
             '_bckfc_championship',
             $series && !empty($input['championship']) ? 1 : 0,
         );
+    }
+
+    public static function getEventTimes(int $eventId): array
+    {
+        $values = get_post_meta($eventId, '_bckfc_times', false);
+
+        return self::normalizeEventTimes($values[0] ?? []);
+    }
+
+    public static function normalizeEventTimes($input): array
+    {
+        if (!is_array($input)) {
+            throw new \InvalidArgumentException('Choose valid tournament times.');
+        }
+
+        $times = [];
+
+        foreach (self::TIME_FIELDS as $key => $label) {
+            $value = $input[$key] ?? '';
+
+            if (
+                !is_string($value) ||
+                ($value !== '' && !preg_match('/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/D', $value))
+            ) {
+                throw new \InvalidArgumentException('Choose a valid ' . $label . ' time.');
+            }
+
+            $times[$key] = $value;
+        }
+
+        return $times;
     }
 
     public static function getRegistrationCloseDate(int $eventId): ?\DateTimeImmutable
@@ -177,27 +213,9 @@ final class TournamentSettings
         return $locations;
     }
 
-    public static function getTicketSettings(int $id): array
-    {
-        return [
-            'purpose' => (string) get_post_meta($id, '_bckfc_ticket_purpose', true) ?: 'other',
-        ];
-    }
-
-    public static function saveTicketSettings(int $id, array $input): void
-    {
-        $purpose = $input['purpose'] ?? 'other';
-
-        if (!is_string($purpose) || !isset(self::PURPOSES[$purpose])) {
-            throw new \InvalidArgumentException('Choose a valid BCKFC Type.');
-        }
-
-        update_post_meta($id, '_bckfc_ticket_purpose', $purpose);
-    }
-
     public static function seasonPassCoversEvent(int $ticketId, int $eventId): bool
     {
-        if (self::getTicketSettings($ticketId)['purpose'] !== 'season_pass') {
+        if (TicketSettings::getTicketSettings($ticketId)['purpose'] !== 'season_pass') {
             return false;
         }
 

@@ -3,6 +3,7 @@
 use BCKFC\Tools\Events\TournamentSettings as Settings;
 use BCKFC\Tools\Events\TournamentSettingsPanel;
 use BCKFC\Tools\Events\TicketEditor;
+use BCKFC\Tools\Events\TicketSettings;
 
 if (!defined('ABSPATH') || wp_get_environment_type() !== 'local') {
     throw new RuntimeException('This integration check requires the local WordPress site.');
@@ -227,7 +228,7 @@ try {
     );
 
     fieldCheck(
-        Settings::getTicketSettings(0) === ['purpose' => 'other'],
+        TicketSettings::getTicketSettings(0) === ['purpose' => 'other'],
         'New tickets default to Other.',
     );
 
@@ -246,7 +247,7 @@ try {
     $posts[] = $ticket;
 
     fieldCheck(
-        Settings::getTicketSettings($ticket) === ['purpose' => 'season_pass'],
+        TicketSettings::getTicketSettings($ticket) === ['purpose' => 'season_pass'],
         'Ticket provider saves a season pass without selecting future events.',
     );
 
@@ -319,7 +320,7 @@ try {
     $provider->ticket_add($event, $data);
 
     fieldCheck(
-        Settings::getTicketSettings($ticket) === ['purpose' => 'youth_entry'],
+        TicketSettings::getTicketSettings($ticket) === ['purpose' => 'youth_entry'],
         'Youth is a distinct ticket type.',
     );
 
@@ -333,7 +334,7 @@ try {
     $provider->ticket_add($event, $data);
 
     fieldCheck(
-        Settings::getTicketSettings($ticket)['purpose'] === 'youth_entry',
+        TicketSettings::getTicketSettings($ticket)['purpose'] === 'youth_entry',
         'Invalid ticket nonce preserves classification.',
     );
 
@@ -342,7 +343,7 @@ try {
     $provider->ticket_add($event, $data);
 
     fieldCheck(
-        Settings::getTicketSettings($ticket)['purpose'] === 'youth_entry',
+        TicketSettings::getTicketSettings($ticket)['purpose'] === 'youth_entry',
         'Ticket fields require event edit capability.',
     );
 
@@ -351,7 +352,7 @@ try {
     $provider->ticket_add($event, $data);
 
     fieldCheck(
-        Settings::getTicketSettings($ticket)['purpose'] === 'other',
+        TicketSettings::getTicketSettings($ticket)['purpose'] === 'other',
         'Selecting Other saves the default type.',
     );
 

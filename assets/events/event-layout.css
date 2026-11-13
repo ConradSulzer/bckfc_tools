@@ -218,7 +218,12 @@ time.bckfc-event-highlight__value span {
   }
 }
 .bckfc-event-body {
-  padding: 32px 0;
+  padding: 0;
+}
+/* Full-width sections own their padding; Avada columns must not separate them. */
+.bckfc-event-body .fusion-layout-column:has(.bckfc-tournament-timeline) {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 .bckfc-event-tickets {
   --bckfc-ticket-padding: 20px;
@@ -725,4 +730,76 @@ time.bckfc-event-highlight__value span {
 #main #bckfc-tickets .tribe-modal__content .tribe-tickets__attendee-tickets-footer-cart-button,
 #main #bckfc-tickets .tribe-modal__content .tribe-tickets__attendee-tickets-footer-divider {
   display: none;
+}
+
+/* Tournament Times section */
+.bckfc-tournament-timeline {
+  padding: 24px 0;
+  background: var(--bckfc-ink);
+  color: white;
+  /* Extend the background using the same approach as the tickets section. */
+  border-image: linear-gradient(var(--bckfc-ink), var(--bckfc-ink)) fill 0 / 0 / 0 100vw;
+}
+#main .bckfc-tournament-timeline h2 {
+  margin: 0 0 16px;
+  color: inherit;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  text-transform: uppercase;
+}
+.bckfc-tournament-timeline__columns {
+  display: grid;
+  gap: 20px;
+}
+#main .bckfc-tournament-timeline__times {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 8px;
+}
+.bckfc-tournament-timeline__times li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 85px minmax(0, 1fr);
+  gap: 12px;
+  padding: 0 0 12px 22px;
+}
+.bckfc-tournament-timeline__times li:last-child {
+  padding-bottom: 0;
+}
+.bckfc-tournament-timeline__times li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: -6px;
+  left: 0;
+  width: 2px;
+  background: var(--bckfc-orange);
+}
+.bckfc-tournament-timeline__times li::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bckfc-orange);
+}
+.bckfc-tournament-timeline__times time {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.bckfc-tournament-timeline__details > :first-child {
+  margin-top: 0;
+}
+.bckfc-tournament-timeline__details > :last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 768px) {
+  .bckfc-tournament-timeline {
+    padding: 32px 0;
+  }
+  .bckfc-tournament-timeline__columns:has(.bckfc-tournament-timeline__details) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+  }
 }

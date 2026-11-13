@@ -22,6 +22,7 @@ add_action('rest_api_init', [BCKFC\Tools\RodeoExport\ExportController::class, 'r
 
 require_once __DIR__ . '/includes/events/TournamentSettings.php';
 require_once __DIR__ . '/includes/events/TournamentSettingsPanel.php';
+require_once __DIR__ . '/includes/events/TicketSettings.php';
 require_once __DIR__ . '/includes/events/TicketEditor.php';
 
 BCKFC\Tools\Events\TournamentSettingsPanel::registerHooks();
@@ -32,3 +33,6 @@ require_once __DIR__ . '/includes/events/EventLayoutPanel.php';
 
 BCKFC\Tools\Events\BckfcEventLayout::registerHooks();
 BCKFC\Tools\Events\EventLayoutPanel::registerHooks();
+
+require_once __DIR__ . '/includes/events/TournamentTimeline.php';
+BCKFC\Tools\Events\TournamentTimeline::registerHooks();

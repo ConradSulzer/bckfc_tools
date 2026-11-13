@@ -1,4 +1,7 @@
-/* Shared brand colors; the event wrapper also supplies them to full-width backgrounds. */
+/* Official BCKFC palette. Orange is the brighter BCKFC accent.
+ * Blue is the accent blue; Ink is the dark blue for text and dark surfaces.
+ * The event wrapper also supplies these colors to full-width backgrounds.
+ */
 .bckfc,
 .bckfc-event-page {
   --bckfc-orange: #f47b20;

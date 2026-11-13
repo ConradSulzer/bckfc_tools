@@ -67,6 +67,7 @@ final class TournamentSettingsPanel
         echo '<div class="bckfc-event-editor-tabs" role="tablist" aria-label="Tournament Settings">';
         echo '<button type="button" role="tab" id="bckfc-tournament-general-tab" aria-controls="bckfc-tournament-general" aria-selected="true" tabindex="0">General</button>';
         echo '<button type="button" role="tab" id="bckfc-tournament-locations-tab" aria-controls="bckfc-tournament-locations" aria-selected="false" tabindex="-1">Locations</button>';
+        echo '<button type="button" role="tab" id="bckfc-tournament-times-tab" aria-controls="bckfc-tournament-times" aria-selected="false" tabindex="-1">Times</button>';
         echo '</div><div class="bckfc-event-editor-panels">';
         echo '<div role="tabpanel" id="bckfc-tournament-general" aria-labelledby="bckfc-tournament-general-tab">';
 
@@ -116,7 +117,37 @@ final class TournamentSettingsPanel
         echo '</td></tr></tbody></table></div>';
         echo '<div role="tabpanel" id="bckfc-tournament-locations" aria-labelledby="bckfc-tournament-locations-tab" hidden>';
         self::renderTournamentLocations($post->ID);
+        echo '</div><div role="tabpanel" id="bckfc-tournament-times" aria-labelledby="bckfc-tournament-times-tab" hidden>';
+        self::renderTournamentTimes($post->ID);
         echo '</div></div></div>';
+    }
+
+    private static function renderTournamentTimes(int $eventId): void
+    {
+        $times = TournamentSettings::getEventTimes($eventId);
+
+        echo '<p class="description">All times are optional and use the event day and timezone. Save the event to keep time changes.</p>';
+        echo '<table class="eventtable eventForm"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><tbody>';
+
+        foreach (TournamentSettings::TIME_FIELDS as $key => $label) {
+            $id = 'bckfc-time-' . $key;
+
+            echo '<tr><td><label for="' .
+                esc_attr($id) .
+                '">' .
+                esc_html($label) .
+                ':</label></td><td>';
+            echo '<input type="time" id="' .
+                esc_attr($id) .
+                '" name="bckfc_event[times][' .
+                esc_attr($key) .
+                ']" value="' .
+                esc_attr($times[$key]) .
+                '">';
+            echo '</td></tr>';
+        }
+
+        echo '</tbody></table>';
     }
 
     private static function renderTournamentLocations(int $eventId): void

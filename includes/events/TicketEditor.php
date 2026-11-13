@@ -6,8 +6,18 @@ final class TicketEditor
 {
     public static function registerHooks(): void
     {
-        add_action('tribe_events_tickets_metabox_edit_main', [self::class, 'renderTicketTypeField'], 10, 3);
-        add_action('event_tickets_after_save_ticket', [self::class, 'saveTicketTypeFromRequest'], 10, 4);
+        add_action(
+            'tribe_events_tickets_metabox_edit_main',
+            [self::class, 'renderTicketTypeField'],
+            10,
+            3,
+        );
+        add_action(
+            'event_tickets_after_save_ticket',
+            [self::class, 'saveTicketTypeFromRequest'],
+            10,
+            4,
+        );
     }
 
     public static function renderTicketTypeField($eventId, $ticketId, $type): void
@@ -23,21 +33,25 @@ final class TicketEditor
             return;
         }
 
-        $settings = TournamentSettings::getTicketSettings($ticketId);
+        $settings = TicketSettings::getTicketSettings($ticketId);
 
         wp_nonce_field('bckfc_ticket_' . $eventId, 'bckfc_ticket_nonce', false);
 
         echo '<div class="input_block"><label class="ticket_form_label ticket_form_left" for="bckfc-ticket-purpose">BCKFC Type:</label><select class="ticket_field ticket_form_right" id="bckfc-ticket-purpose" name="bckfc_ticket[purpose]">';
 
-        foreach (TournamentSettings::PURPOSES as $value => $label) {
+        foreach (TicketSettings::TYPES as $value => $label) {
             TournamentSettingsPanel::renderSelectOption($value, $label, $settings['purpose']);
         }
 
         echo '</select></div>';
     }
 
-    public static function saveTicketTypeFromRequest($eventId, $ticket, array $data, string $provider): void
-    {
+    public static function saveTicketTypeFromRequest(
+        $eventId,
+        $ticket,
+        array $data,
+        string $provider,
+    ): void {
         $eventId = (int) $eventId;
 
         if (
@@ -61,7 +75,7 @@ final class TicketEditor
         }
 
         try {
-            TournamentSettings::saveTicketSettings((int) $ticket->ID, $data['bckfc_ticket']);
+            TicketSettings::saveTicketSettings((int) $ticket->ID, $data['bckfc_ticket']);
         } catch (\InvalidArgumentException $e) {
             TournamentSettingsPanel::queueAdminErrorNotice(
                 'The ticket was saved, but its BCKFC settings were not: ' . $e->getMessage(),
