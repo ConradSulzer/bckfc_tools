@@ -221,7 +221,7 @@ time.bckfc-event-highlight__value span {
   padding: 0;
 }
 /* Full-width sections own their padding; Avada columns must not separate them. */
-.bckfc-event-body .fusion-layout-column:has(.bckfc-tournament-timeline) {
+.bckfc-event-body .fusion-layout-column:has(.bckfc-tournament-timeline, .bckfc-event-categories) {
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -878,5 +878,85 @@ time.bckfc-event-highlight__value span {
   }
   .bckfc-tournament-timeline__locations {
     display: contents;
+  }
+}
+
+/* Categories */
+.bckfc-event-categories {
+  padding: 32px 0;
+  background: var(--bckfc-gray);
+  color: var(--bckfc-ink);
+  border-image: linear-gradient(var(--bckfc-gray), var(--bckfc-gray)) fill 0 / 0 / 0 100vw;
+}
+#main .bckfc-event-categories h2 {
+  margin: 0 0 24px;
+  color: inherit;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  text-transform: uppercase;
+}
+#main .bckfc-event-categories__table {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-collapse: collapse;
+  background: white;
+  color: inherit;
+}
+#main .bckfc-event-categories__table :is(th, td) {
+  font-family: var(--bckfc-font-body);
+  padding: 20px 24px;
+  text-align: left;
+  vertical-align: top;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+#main .bckfc-event-categories__table thead th {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+#main .bckfc-event-categories__table tbody th {
+  width: 25%;
+  font-family: var(--bckfc-font-heading);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+}
+#main .bckfc-event-categories__table p {
+  margin: 0 0 8px;
+}
+#main .bckfc-event-categories__table p:last-child {
+  margin-bottom: 0;
+}
+#main .bckfc-event-categories__prize {
+  width: 25%;
+  font-weight: 700;
+}
+#main .bckfc-event-categories__table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+@media (max-width: 767px) {
+  .bckfc-event-categories__table thead {
+    display: none;
+  }
+  .bckfc-event-categories__table,
+  .bckfc-event-categories__table tbody,
+  .bckfc-event-categories__table tr {
+    display: block;
+  }
+  .bckfc-event-categories__table tbody tr {
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .bckfc-event-categories__table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  #main .bckfc-event-categories__table tbody :is(th, td) {
+    display: block;
+    width: auto;
+    padding: 0;
+    border: 0;
+  }
+  #main .bckfc-event-categories__table td:not(:empty) {
+    margin-top: 8px;
   }
 }

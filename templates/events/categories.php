@@ -1,0 +1,12 @@
+<?php defined('ABSPATH') || exit(); ?>
+<section class="bckfc bckfc-event-categories">
+    <?php if ($heading !== ''): ?>
+        <h2><?= esc_html($heading) ?></h2>
+    <?php endif; ?>
+    <table class="bckfc-event-categories__table">
+        <thead>
+            <tr><th scope="col">Category</th><th scope="col">Details</th><th scope="col">Payout / Prize</th></tr>
+        </thead>
+        <tbody><?= $rows ?></tbody>
+    </table>
+</section>

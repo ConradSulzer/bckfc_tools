@@ -36,3 +36,5 @@ BCKFC\Tools\Events\EventLayoutPanel::registerHooks();
 
 require_once __DIR__ . '/includes/events/TournamentTimeline.php';
 BCKFC\Tools\Events\TournamentTimeline::registerHooks();
+require_once __DIR__ . '/includes/events/EventCategories.php';
+BCKFC\Tools\Events\EventCategories::registerHooks();
