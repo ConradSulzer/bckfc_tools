@@ -101,7 +101,7 @@
     const values = {};
     editor.querySelectorAll('[name^="_bckfc_event_layout["]').forEach((input) => {
       const key = input.name.match(/\[([^\]]+)\]/)[1];
-      values[key] = input.value;
+      values[key] = input.type === 'checkbox' ? (input.checked ? '1' : '0') : input.value;
     });
     data._bckfc_event_layout = values;
   });

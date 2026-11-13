@@ -19,6 +19,7 @@ final class BckfcEventLayout
    * secondary_label   string / ''       Second button text; both text and link are required.
    * secondary_url     string / ''       Second button URL or section anchor.
    * ticket_notice     string / ''       Optional message above the native ticket forms.
+   * coming_soon       bool / false      Replace header buttons with a coming-soon message.
    * entry_fee         string / ''       Display price, such as $35, From $35 or Free.
    * format_label      string / ''       Display wording for the tournament format.
    * rules_url         string / ''       Optional rules URL or section anchor.
@@ -85,6 +86,7 @@ final class BckfcEventLayout
   {
     $input = is_array($input) ? $input : [];
     $settings = ['template' => ($input['template'] ?? '') === 'bckfc' ? 'bckfc' : ''];
+    $settings['coming_soon'] = in_array($input['coming_soon'] ?? false, [true, 1, '1'], true);
 
     foreach (
       [
@@ -206,11 +208,19 @@ final class BckfcEventLayout
     $primaryUrl = $settings['primary_url'] ?: '#bckfc-tickets';
     $primaryLabel = $settings['primary_label'] ?: 'Register';
     $eventHasEnded = tribe_is_past_event(get_post($eventId));
+    $statusMessage = '';
+
+    if ($eventHasEnded) {
+      $statusMessage = 'This Event Has Passed.';
+    } elseif ($settings['coming_soon']) {
+      $statusMessage = 'Registration Coming Soon';
+    }
+
     $showPrimary =
-      !$eventHasEnded &&
+      $statusMessage === '' &&
       ($settings['primary_url'] !== '' || $hasTicketPicker);
     $showSecondary =
-      !$eventHasEnded &&
+      $statusMessage === '' &&
       $settings['secondary_label'] !== '' &&
       $settings['secondary_url'] !== '';
 

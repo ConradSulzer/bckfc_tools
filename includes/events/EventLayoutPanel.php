@@ -142,6 +142,17 @@ final class EventLayoutPanel
         <div role="tabpanel" id="bckfc-panel-registration" aria-labelledby="bckfc-tab-registration" hidden>
           <table class="form-table">
             <tbody>
+              <tr>
+                <th>Coming Soon</th>
+                <td>
+                  <label for="bckfc-layout-coming-soon">
+                    <input type="checkbox" id="bckfc-layout-coming-soon" name="_bckfc_event_layout[coming_soon]" value="1"
+                      <?= checked($settings['coming_soon'], true, false) ?>>
+                    Registration Coming Soon
+                  </label>
+                  <p class="description">Replaces the header buttons with a "Coming Soon" message.</p>
+                </td>
+              </tr>
               <?php
               self::renderTextField(
                 'primary_label',

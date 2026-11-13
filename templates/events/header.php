@@ -53,7 +53,9 @@ if ($settings['image']) {
             <p class="bckfc-event-intro"><?= nl2br(esc_html($settings['intro'])) ?></p>
         <?php endif; ?>
 
-        <?php if ($showPrimary || $showSecondary): ?>
+        <?php if ($statusMessage !== ''): ?>
+            <p class="bckfc-event-status"><?= esc_html($statusMessage) ?></p>
+        <?php elseif ($showPrimary || $showSecondary): ?>
             <div class="bckfc-event-actions">
                 <?php if ($showPrimary): ?>
                     <a class="bckfc-button" href="<?= esc_url($primaryUrl) ?>">

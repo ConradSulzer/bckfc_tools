@@ -118,6 +118,14 @@
   object-fit: contain;
   border-radius: 5px;
 }
+#tribe-events-content .bckfc-event-status {
+  margin: 24px 0 0;
+  color: var(--bckfc-orange);
+  font-family: var(--bckfc-font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
 .bckfc-event-highlights {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
