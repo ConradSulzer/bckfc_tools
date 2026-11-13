@@ -1,7 +1,7 @@
 <?php
 namespace BCKFC\Tools\Events;
 
-/** An optional Avada element using times owned by the event. */
+/** An optional Avada element using event times and locations. */
 final class TournamentTimeline
 {
     public static function registerHooks(): void
@@ -13,7 +13,7 @@ final class TournamentTimeline
     public static function registerBuilderElement(): void
     {
         fusion_builder_map([
-            'name' => 'BCKFC Tournament Timeline',
+            'name' => 'BCKFC Times and Locations',
             'shortcode' => 'bckfc_tournament_timeline',
             'icon' => 'fusiona-clock',
             'params' => [
@@ -29,7 +29,7 @@ final class TournamentTimeline
                     'param_name' => 'element_content',
                     'value' => '',
                     'description' =>
-                        'Optional text beside the timeline. Times come from Tournament Settings → Times; save the event after changing them.',
+                        'Optional details below the times and locations. Save changes to Tournament Settings before previewing.',
                 ],
             ],
         ]);
@@ -49,7 +49,14 @@ final class TournamentTimeline
             static fn(string $time): bool => $time !== '',
         );
 
-        if (!$times) {
+        $locations = array_filter(
+            TournamentSettings::getEventLocations($eventId),
+            static fn(array $location): bool => $location['name'] !== '' ||
+                $location['location'] !== '' ||
+                $location['address'] !== '',
+        );
+
+        if (!$times && !$locations) {
             return '';
         }
 

@@ -740,7 +740,7 @@ time.bckfc-event-highlight__value span {
   /* Extend the background using the same approach as the tickets section. */
   border-image: linear-gradient(var(--bckfc-ink), var(--bckfc-ink)) fill 0 / 0 / 0 100vw;
 }
-#main .bckfc-tournament-timeline h2 {
+#main .bckfc-tournament-timeline :is(h2, h3) {
   margin: 0 0 16px;
   color: inherit;
   font-size: clamp(1.5rem, 3vw, 2rem);
@@ -788,18 +788,95 @@ time.bckfc-event-highlight__value span {
   font-weight: 700;
   white-space: nowrap;
 }
+#main .bckfc-tournament-location p {
+  margin: 0 0 4px;
+}
+.bckfc-tournament-location {
+  text-align: center;
+}
+.bckfc-tournament-location > svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  color: var(--bckfc-orange);
+}
+#main .bckfc-tournament-location h3 {
+  margin-bottom: 8px;
+}
+.bckfc-tournament-location__label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+#main .bckfc-tournament-location a {
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.bckfc-tournament-timeline__details {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(255 255 255 / 25%);
+}
 .bckfc-tournament-timeline__details > :first-child {
   margin-top: 0;
 }
 .bckfc-tournament-timeline__details > :last-child {
   margin-bottom: 0;
 }
+@media (max-width: 767px) {
+  .bckfc-tournament-location + .bckfc-tournament-location {
+    margin-top: 40px;
+  }
+  .bckfc-tournament-timeline__columns {
+    gap: 40px;
+    text-align: center;
+  }
+  #main .bckfc-tournament-timeline__times {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    text-align: left;
+  }
+}
 @media (min-width: 768px) {
   .bckfc-tournament-timeline {
     padding: 32px 0;
   }
-  .bckfc-tournament-timeline__columns:has(.bckfc-tournament-timeline__details) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 48px;
+  .bckfc-tournament-timeline__columns {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(4, min-content) 1fr;
+    column-gap: 32px;
+    row-gap: 0;
+  }
+  .bckfc-tournament-timeline__schedule,
+  .bckfc-tournament-location {
+    grid-row: 1 / span 5;
+  }
+  .bckfc-tournament-location {
+    display: grid;
+    grid-template-rows: subgrid;
+    align-items: start;
+  }
+  .bckfc-tournament-location > svg {
+    grid-row: 1;
+  }
+  .bckfc-tournament-location > h3 {
+    grid-row: 2;
+  }
+  .bckfc-tournament-location__label {
+    grid-row: 3;
+  }
+  .bckfc-tournament-location__address {
+    grid-row: 4;
+  }
+  .bckfc-tournament-location > a {
+    grid-row: 5;
+  }
+  .bckfc-tournament-timeline__locations {
+    display: contents;
   }
 }
