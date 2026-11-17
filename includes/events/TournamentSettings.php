@@ -212,18 +212,4 @@ final class TournamentSettings
 
         return $locations;
     }
-
-    public static function seasonPassCoversEvent(int $ticketId, int $eventId): bool
-    {
-        if (TicketSettings::getTicketSettings($ticketId)['purpose'] !== 'season_pass') {
-            return false;
-        }
-
-        $sellingEventId = (int) get_post_meta($ticketId, '_tribe_wooticket_for_event', true);
-        $sellingEvent = self::getEventSettings($sellingEventId);
-        $event = self::getEventSettings($eventId);
-
-        return !$event['championship'] &&
-            (bool) array_intersect($sellingEvent['series'], $event['series']);
-    }
 }

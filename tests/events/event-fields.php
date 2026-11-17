@@ -248,60 +248,7 @@ try {
 
     fieldCheck(
         TicketSettings::getTicketSettings($ticket) === ['purpose' => 'season_pass'],
-        'Ticket provider saves a season pass without selecting future events.',
-    );
-
-    Settings::saveEventSettings($event, array_replace($input, ['championship' => '0']));
-
-    fieldCheck(Settings::seasonPassCoversEvent($ticket, $event), 'Pass covers its selling event.');
-
-    $laterEvent = wp_insert_post([
-        'post_type' => 'tribe_events',
-        'post_status' => 'draft',
-        'post_title' => 'Later series event coverage check',
-    ]);
-
-    $posts[] = $laterEvent;
-    Settings::saveEventSettings($laterEvent, array_replace($input, ['championship' => '0']));
-
-    fieldCheck(
-        Settings::seasonPassCoversEvent($ticket, $laterEvent),
-        'Pass covers an event created later in the same series.',
-    );
-
-    Settings::saveEventSettings($laterEvent, $input);
-
-    fieldCheck(
-        !Settings::seasonPassCoversEvent($ticket, $laterEvent),
-        'Championship is excluded even in the same series.',
-    );
-
-    $otherSeries = wp_insert_term('Other year ' . wp_generate_uuid4(), Settings::TAXONOMY, [
-        'parent' => $parent->term_id,
-    ]);
-
-    fieldCheck(!is_wp_error($otherSeries), 'Create another yearly series.');
-
-    $terms[] = $otherSeries['term_id'];
-
-    Settings::saveEventSettings(
-        $laterEvent,
-        array_replace($input, [
-            'series' => $otherSeries['term_id'],
-            'championship' => '0',
-        ]),
-    );
-
-    fieldCheck(
-        !Settings::seasonPassCoversEvent($ticket, $laterEvent),
-        'Different series is excluded.',
-    );
-
-    Settings::saveEventSettings($laterEvent, array_replace($input, ['series' => 0]));
-
-    fieldCheck(
-        !Settings::seasonPassCoversEvent($ticket, $laterEvent),
-        'Events without a series are excluded.',
+        'Ticket provider saves the Season Pass type.',
     );
 
     ob_start();
@@ -313,8 +260,6 @@ try {
         'Ticket form extension renders.',
     );
 
-    fieldCheck(!str_contains($html, 'Covered Events'), 'No manual coverage checklist.');
-
     $data['ticket_id'] = $ticket;
     $data['bckfc_ticket'] = ['purpose' => 'youth_entry'];
     $provider->ticket_add($event, $data);
@@ -322,11 +267,6 @@ try {
     fieldCheck(
         TicketSettings::getTicketSettings($ticket) === ['purpose' => 'youth_entry'],
         'Youth is a distinct ticket type.',
-    );
-
-    fieldCheck(
-        !Settings::seasonPassCoversEvent($ticket, $event),
-        'Ordinary tickets are not season passes.',
     );
 
     $data['bckfc_ticket_nonce'] = 'invalid';
@@ -356,7 +296,7 @@ try {
         'Selecting Other saves the default type.',
     );
 
-    echo "PASS: event saves, categories, Championship, permissions, ticket provider hooks, Youth Entry and pass coverage.\n";
+    echo "PASS: event saves, categories, Championship, permissions, ticket provider hooks, Youth Entry and Season Pass types.\n";
 } finally {
     $_POST = [];
 
