@@ -114,7 +114,16 @@ final class TournamentSettingsPanel
             esc_attr($settings['registration_closes']) .
             '">';
         echo '<p class="description">Optional. Uses the event timezone. Announces the registration deadline; individual ticket sale times are set separately. Save the event before previewing a changed deadline.</p>';
-        echo '</td></tr></tbody></table></div>';
+        echo '</td></tr></tbody></table>';
+        echo '<h3>Using Dates in Event Content</h3>';
+        echo '<p>Paste a shortcode wherever you want a date to appear in event content. It uses the dates saved on that event, so the same saved content works across events.</p>';
+        echo '<table class="widefat striped"><thead><tr><th>Date</th><th>Shortcode</th><th>Example Output</th></tr></thead><tbody>';
+        echo '<tr><td>Event Date</td><td><code>[bckfc_event_date]</code></td><td>March 20, 2027</td></tr>';
+        echo '<tr><td>Registration Closes</td><td><code>[bckfc_registration_closes]</code></td><td>March 19, 2027 at 8:00 PM</td></tr>';
+        echo '</tbody></table>';
+        echo '<p><strong>Example:</strong> Write <code>Registration closes [bckfc_registration_closes].</code> Anglers will see: <strong>Registration closes March 19, 2027 at 8:00 PM.</strong></p>';
+        echo '<p class="description">Event Date uses the event’s start date. Registration Closes uses the event timezone and displays nothing when unset. Save date changes before previewing.</p>';
+        echo '</div>';
         echo '<div role="tabpanel" id="bckfc-tournament-locations" aria-labelledby="bckfc-tournament-locations-tab" hidden>';
         self::renderTournamentLocations($post->ID);
         echo '</div><div role="tabpanel" id="bckfc-tournament-times" aria-labelledby="bckfc-tournament-times-tab" hidden>';
@@ -148,6 +157,21 @@ final class TournamentSettingsPanel
         }
 
         echo '</tbody></table>';
+        echo '<h3>Using Times in Event Content</h3>';
+        echo '<p>Paste a shortcode wherever you want a time to appear in event text or a rules accordion. It uses the time saved on that event, so the same saved rules work across events.</p>';
+        echo '<p><strong>Example:</strong> If Scales Close is 3:00 PM, write:<br>All anglers must arrive by <code>[bckfc_event_time type="scales_close"]</code>.<br>Anglers will see: <strong>All anglers must arrive by 3:00 PM.</strong></p>';
+        echo '<table class="widefat striped"><thead><tr><th>Time</th><th>Shortcode</th></tr></thead><tbody>';
+
+        foreach (TournamentSettings::TIME_FIELDS as $key => $label) {
+            echo '<tr><td>' .
+                esc_html($label) .
+                '</td><td><code>[bckfc_event_time type="' .
+                esc_attr($key) .
+                '"]</code></td></tr>';
+        }
+
+        echo '</tbody></table>';
+        echo '<p class="description">Save time changes before previewing. A blank time leaves an empty space in the sentence.</p>';
     }
 
     private static function renderTournamentLocations(int $eventId): void
@@ -217,6 +241,16 @@ final class TournamentSettingsPanel
 
             echo '</tbody></table>';
         }
+
+        echo '<h3>Using Locations in Event Content</h3>';
+        echo '<p>Paste a shortcode wherever you want a location to appear in event text or a rules accordion. It uses the location saved on that event, so the same saved rules work across events.</p>';
+        echo '<p><strong>Example:</strong> If the weigh-in Name is Delta Marina and Location is Buras, write:<br>Weigh-in is at <code>[bckfc_event_location type="weigh_in"]</code>.<br>Anglers will see: <strong>Weigh-in is at Delta Marina · Buras.</strong></p>';
+        echo '<table class="widefat striped"><thead><tr><th>Location</th><th>Shortcode</th></tr></thead><tbody>';
+        echo '<tr><td>Fishing / Launch</td><td><code>[bckfc_event_location type="fishing"]</code></td></tr>';
+        echo '<tr><td>Weigh-In / Awards</td><td><code>[bckfc_event_location type="weigh_in"]</code></td></tr>';
+        echo '</tbody></table>';
+        echo '<p>These show Name · Location. To show just one field, add <code>field="name"</code>, <code>field="location"</code>, <code>field="address"</code> or <code>field="notes"</code> inside the brackets. For example, the launch address is <code>[bckfc_event_location type="fishing" field="address"]</code>.</p>';
+        echo '<p class="description">Save location changes before previewing. Blank fields display nothing. Addresses appear as text, not directions links.</p>';
     }
 
     public static function renderSelectOption(string $value, string $label, string $selected): void

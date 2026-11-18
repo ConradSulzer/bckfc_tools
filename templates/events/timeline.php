@@ -8,7 +8,7 @@ defined('ABSPATH') || exit();
         <?php if ($times): ?>
             <div class="bckfc-tournament-timeline__schedule">
                 <?php if ($heading !== ''): ?>
-                    <h2><?= esc_html($heading) ?></h2>
+                    <h2 class="bckfc-section-heading"><?= esc_html($heading) ?></h2>
                 <?php endif; ?>
                 <ol class="bckfc-tournament-timeline__times">
                     <?php foreach ($times as $key => $time): ?>
@@ -31,7 +31,7 @@ defined('ABSPATH') || exit();
                         array_filter([$location['name'], $location['location']]),
                     ); ?>
                     <div class="bckfc-tournament-location">
-                        <h2><?php echo $key === 'fishing'
+                        <h2 class="bckfc-section-heading"><?php echo $key === 'fishing'
                             ? 'Launch Location'
                             : 'Weigh-In / Awards'; ?></h2>
                         <?php include dirname(__DIR__, 2) .

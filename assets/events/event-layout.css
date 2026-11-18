@@ -30,6 +30,34 @@
 .bckfc-event-page .bckfc-event-section--white {
   --bckfc-event-section-background: white;
 }
+/* Native Avada elements put custom classes on wrappers rather than headings. */
+#main .bckfc-event-page .bckfc-section-heading,
+#main .bckfc-event-page .bckfc-section-heading > .fusion-title-heading,
+#main #bckfc-tickets .tribe-tickets__tickets-form .tribe-tickets__tickets-title {
+  margin: 0 0 16px;
+  color: inherit;
+  font-family: var(--bckfc-font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: uppercase;
+}
+#main .bckfc-event-page .bckfc-section-heading > .fusion-title-heading {
+  margin: 0;
+}
+#main .bckfc-event-page .bckfc-item-heading,
+#main .bckfc-event-page .bckfc-item-headings .panel-title {
+  font-family: var(--bckfc-font-heading);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-transform: uppercase;
+}
+#main .bckfc-event-page .bckfc-event-section .fusion-accordian .fusion-toggle-boxed-mode {
+  margin-bottom: 3px;
+}
 /* Avada accordion titles are controls, not Tribe's underlined content links. */
 .bckfc-event-page .bckfc-event-section .fusion-accordian .panel-title > a {
   border-bottom: 0;
@@ -343,11 +371,6 @@ time.bckfc-event-highlight__value span {
 }
 #main #bckfc-tickets .tribe-tickets__tickets-form .tribe-tickets__tickets-title {
   margin: 0 0 24px;
-  font-family: var(--bckfc-font-heading);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--bckfc-ink);
-  text-transform: uppercase;
 }
 #main #bckfc-tickets .tribe-tickets__tickets-form .tribe-tickets__tickets-item {
   clear: both;
@@ -768,12 +791,6 @@ time.bckfc-event-highlight__value span {
 }
 
 /* Tournament Times section */
-#main .bckfc-tournament-timeline :is(h2, h3) {
-  margin: 0 0 16px;
-  color: inherit;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  text-transform: uppercase;
-}
 .bckfc-tournament-timeline__columns {
   display: grid;
   gap: 20px;
@@ -830,7 +847,8 @@ time.bckfc-event-highlight__value span {
   color: var(--bckfc-orange);
 }
 #main .bckfc-tournament-location h3 {
-  margin-bottom: 8px;
+  margin: 0 0 8px;
+  color: inherit;
   font-family: var(--bckfc-font-body);
   font-size: 1.75rem;
   font-weight: 600;
@@ -927,12 +945,6 @@ time.bckfc-event-highlight__value span {
 }
 
 /* Categories */
-#main .bckfc-event-categories h2 {
-  margin: 0 0 16px;
-  color: inherit;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  text-transform: uppercase;
-}
 #main .bckfc-event-categories__table {
   width: 100%;
   margin: 0;
@@ -956,9 +968,6 @@ time.bckfc-event-highlight__value span {
 }
 #main .bckfc-event-categories__table tbody th {
   width: 25%;
-  font-family: var(--bckfc-font-heading);
-  font-size: 1.25rem;
-  text-transform: uppercase;
 }
 #main .bckfc-event-categories__table p {
   margin: 0 0 6px;

@@ -28,6 +28,9 @@ require_once __DIR__ . '/includes/events/TicketEditor.php';
 BCKFC\Tools\Events\TournamentSettingsPanel::registerHooks();
 BCKFC\Tools\Events\TicketEditor::registerHooks();
 
+require_once __DIR__ . '/includes/events/EventShortcodes.php';
+BCKFC\Tools\Events\EventShortcodes::registerHooks();
+
 require_once __DIR__ . '/includes/events/BckfcEventLayout.php';
 require_once __DIR__ . '/includes/events/EventLayoutPanel.php';
 
