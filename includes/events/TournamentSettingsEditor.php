@@ -111,26 +111,36 @@ final class TournamentSettingsEditor
         $times = TournamentSettings::getEventTimes($eventId);
         $labels = TournamentSettings::getEventTimeLabels($eventId);
 
-        echo '<p class="description">All times are optional and use the event day and timezone. Save the event to keep time changes.</p>';
-        echo '<p class="description">Display labels change the timeline wording. Leave them blank to use the standard names. Shortcodes stay the same. Launch is when anglers may leave the launch area; describe early staging or other restrictions in the event content.</p>';
-        echo '<table class="eventtable eventForm"><colgroup><col style="width:25%"><col style="width:25%"><col style="width:50%"></colgroup><thead><tr><th scope="col">Milestone</th><th scope="col">Time</th><th scope="col">Display Label (Optional)</th></tr></thead><tbody>';
+        echo '<p class="description">Set a time or select TBD. Leave both empty to omit a milestone. The timeline follows this order.</p>';
+        echo '<p class="description">Display labels are optional; blank uses the milestone name. Times use the event day and timezone.</p>';
+        echo '<table class="eventtable eventForm bckfc-time-fields"><colgroup><col style="width:24%"><col style="width:32%"><col style="width:44%"></colgroup><thead><tr><th scope="col">Milestone</th><th scope="col">Time</th><th scope="col">Display Label (Optional)</th></tr></thead><tbody>';
 
         foreach (TournamentSettings::TIME_FIELDS as $key => $label) {
             $id = 'bckfc-time-' . $key;
+            $isTbd = $times[$key] === 'tbd';
 
             echo '<tr><td><label for="' .
                 esc_attr($id) .
                 '">' .
                 esc_html($label) .
-                ':</label></td><td>';
+                ':</label></td><td><div class="bckfc-time-controls">';
             echo '<input type="time" id="' .
                 esc_attr($id) .
                 '" name="bckfc_event[times][' .
                 esc_attr($key) .
                 ']" value="' .
-                esc_attr($times[$key]) .
-                '">';
-            echo '</td><td><label class="screen-reader-text" for="' .
+                esc_attr($isTbd ? '' : $times[$key]) .
+                '"' .
+                disabled($isTbd, true, false) .
+                '>';
+            echo '<label><input type="checkbox" data-bckfc-time-tbd="' .
+                esc_attr($id) .
+                '" name="bckfc_event[times][' .
+                esc_attr($key) .
+                ']" value="tbd"' .
+                checked($isTbd, true, false) .
+                '> TBD</label>';
+            echo '</div></td><td><label class="screen-reader-text" for="' .
                 esc_attr($id . '-label') .
                 '">' .
                 esc_html($label . ' Display Label') .
@@ -162,7 +172,7 @@ final class TournamentSettingsEditor
         }
 
         echo '</tbody></table>';
-        echo '<p class="description">Save time changes before previewing. A blank time leaves an empty space in the sentence.</p>';
+        echo '<p class="description">Save time changes before previewing. TBD displays as TBD; a blank time leaves an empty space in the sentence.</p>';
     }
 
     public static function renderTournamentLocations(int $eventId): void

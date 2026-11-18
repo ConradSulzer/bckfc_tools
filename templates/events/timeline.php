@@ -13,9 +13,13 @@ defined('ABSPATH') || exit();
                 <ol class="bckfc-tournament-timeline__times">
                     <?php foreach ($times as $key => $time): ?>
                         <li>
+                            <?php if ($time === 'tbd'): ?>
+                                <span class="bckfc-tournament-timeline__time">TBD</span>
+                            <?php else: ?>
                             <time datetime="<?= esc_attr($time) ?>"><?= esc_html(
     DateTimeImmutable::createFromFormat('!H:i', $time)->format('g:i A'),
 ) ?></time>
+                            <?php endif; ?>
                             <span><?= esc_html(
                                 $timeLabels[$key] ?: TournamentSettings::TIME_FIELDS[$key],
                             ) ?></span>

@@ -31,7 +31,7 @@ $metadata = static function ($value, $id, $key) use ($events, $times) {
     }
 
     if ($key === '_bckfc_times') {
-        return [$id === $events[0]->ID ? $times : ['scales_close' => '16:00']];
+        return [$id === $events[0]->ID ? $times : ['lines_in' => 'tbd', 'scales_close' => '16:00']];
     }
 
     if ($key === '_bckfc_registration_closes') {
@@ -72,6 +72,11 @@ try {
 
     $timeline = do_shortcode('[bckfc_tournament_timeline]');
     $check(str_contains($timeline, 'Shotgun Launch'), true, 'Custom launch label');
+    $check(
+        strpos($timeline, '11:59 PM') < strpos($timeline, '5:30 PM'),
+        true,
+        'Timeline uses field order, not time sorting',
+    );
     $check(str_contains($timeline, 'Scales Close'), true, 'Blank label uses default');
     $check(str_contains($timeline, esc_html('Awards & Raffles')), true, 'Escaped awards label');
     $check(
@@ -139,6 +144,20 @@ try {
     );
 
     $GLOBALS['post'] = $events[1];
+    $check(do_shortcode('[bckfc_event_time type="lines_in"]'), 'TBD', 'Unknown time displays TBD');
+    $timeline = do_shortcode('[bckfc_tournament_timeline]');
+    $check(
+        strpos($timeline, '>TBD<') < strpos($timeline, '4:00 PM'),
+        true,
+        'TBD remains in field order',
+    );
+    $check(str_contains($timeline, 'datetime="tbd"'), false, 'TBD is not an HTML time value');
+    $check(
+        str_contains($timeline, 'Shotgun Launch'),
+        false,
+        'Blank time stays omitted despite label',
+    );
+
     $check(do_shortcode('[bckfc_registration_closes]'), '', 'Unset registration deadline');
     $check(
         do_shortcode('[bckfc_event_date]'),

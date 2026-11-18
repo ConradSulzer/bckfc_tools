@@ -55,8 +55,8 @@ final class EventShortcodes
         $times = TournamentSettings::getEventTimes($eventId);
         $time = $times[$attributes['type']] ?? '';
 
-        if ($time === '') {
-            return '';
+        if ($time === '' || $time === 'tbd') {
+            return $time === 'tbd' ? 'TBD' : '';
         }
 
         return esc_html(\DateTimeImmutable::createFromFormat('!H:i', $time)->format('g:i A'));

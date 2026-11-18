@@ -20,6 +20,14 @@
 
   updateChampionshipVisibility();
 
+  document.querySelectorAll('[data-bckfc-time-tbd]').forEach((checkbox) => {
+    const input = document.getElementById(checkbox.dataset.bckfcTimeTbd);
+
+    checkbox.addEventListener('change', () => {
+      input.disabled = checkbox.checked;
+    });
+  });
+
   document.querySelectorAll('.bckfc-event-editor').forEach((panel) => {
     const tabs = [...panel.querySelectorAll('[role="tab"]')];
 

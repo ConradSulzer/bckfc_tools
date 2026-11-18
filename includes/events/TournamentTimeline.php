@@ -62,7 +62,6 @@ final class TournamentTimeline
 
         $timeLabels = TournamentSettings::getEventTimeLabels($eventId);
 
-        asort($times, SORT_STRING);
         $attributes = shortcode_atts(['heading' => 'Tournament Times'], $attributes);
         $heading = $attributes['heading'];
         $details = wpautop(wp_kses_post($content ?? ''));

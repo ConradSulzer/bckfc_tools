@@ -829,7 +829,8 @@ time.bckfc-event-highlight__value span {
   border-radius: 50%;
   background: var(--bckfc-orange);
 }
-.bckfc-tournament-timeline__times time {
+.bckfc-tournament-timeline__times time,
+.bckfc-tournament-timeline__time {
   font-weight: 700;
   white-space: nowrap;
 }

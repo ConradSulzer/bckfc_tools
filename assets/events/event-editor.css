@@ -38,6 +38,31 @@
 .bckfc-event-editor-panels th[scope='col'] {
   text-align: left;
 }
+.bckfc-event-editor .bckfc-time-fields {
+  width: 100%;
+  max-width: 800px;
+  margin-block: 16px;
+}
+.bckfc-time-fields th,
+.bckfc-time-fields td {
+  padding: 6px 12px 6px 0;
+  vertical-align: middle;
+}
+.bckfc-time-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.bckfc-time-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.bckfc-time-controls input[type='checkbox'] {
+  margin: 0;
+}
 .bckfc-event-editor-panels [data-bckfc-image-preview] img {
   max-width: 150px;
   height: auto;
