@@ -4,6 +4,45 @@
   padding-bottom: 0;
   overflow-x: clip;
 }
+/* Shared by event components and Avada containers using these classes. */
+.bckfc-event-page .bckfc-event-section {
+  margin-block: 0;
+  padding-block: 24px;
+  background: var(--bckfc-event-section-background);
+  color: var(--bckfc-ink);
+  /* Paint to the viewport edges without a stacking context around ticket modals. */
+  border-image: linear-gradient(
+      var(--bckfc-event-section-background),
+      var(--bckfc-event-section-background)
+    )
+    fill 0 / 0 / 0 100vw;
+}
+.bckfc-event-page .bckfc-event-section--gray {
+  --bckfc-event-section-background: var(--bckfc-gray);
+}
+.bckfc-event-page .bckfc-event-section--tan {
+  --bckfc-event-section-background: var(--bckfc-tan);
+}
+.bckfc-event-page .bckfc-event-section--ink {
+  --bckfc-event-section-background: var(--bckfc-ink);
+  color: white;
+}
+.bckfc-event-page .bckfc-event-section--white {
+  --bckfc-event-section-background: white;
+}
+/* Avada accordion titles are controls, not Tribe's underlined content links. */
+.bckfc-event-page .bckfc-event-section .fusion-accordian .panel-title > a {
+  border-bottom: 0;
+}
+.bckfc-event-page .bckfc-event-section .fusion-accordian .panel-title > a:focus-visible {
+  outline: 2px solid var(--bckfc-blue);
+  outline-offset: -2px;
+}
+@media (min-width: 768px) {
+  .bckfc-event-page .bckfc-event-section {
+    padding-block: 32px;
+  }
+}
 #tribe-events-content .bckfc-event-hero {
   position: relative;
   isolation: isolate;
@@ -221,17 +260,14 @@ time.bckfc-event-highlight__value span {
   padding: 0;
 }
 /* Full-width sections own their padding; Avada columns must not separate them. */
-.bckfc-event-body .fusion-layout-column:has(.bckfc-tournament-timeline, .bckfc-event-categories) {
+.bckfc-event-page .fusion-layout-column:has(.bckfc-event-section),
+.bckfc-event-page .bckfc-event-section .fusion-layout-column {
   margin-top: 0;
   margin-bottom: 0;
 }
 .bckfc-event-tickets {
   --bckfc-ticket-padding: 20px;
   scroll-margin-top: 100px;
-  padding: 32px 0;
-  background: var(--bckfc-tan);
-  /* Extend the flat background to the viewport without trapping native modals. */
-  border-image: linear-gradient(var(--bckfc-tan), var(--bckfc-tan)) fill 0 / 0 / 0 100vw;
 }
 .bckfc-event-ticket-notice {
   border-left: 4px solid var(--bckfc-orange);
@@ -691,7 +727,6 @@ time.bckfc-event-highlight__value span {
   }
   .bckfc-event-tickets {
     --bckfc-ticket-padding: 32px;
-    padding: 48px 0;
   }
   #main #bckfc-tickets .tribe-tickets__tickets-form .tribe-tickets__tickets-item {
     grid-template-columns: minmax(0, 1fr) auto auto;
@@ -733,13 +768,6 @@ time.bckfc-event-highlight__value span {
 }
 
 /* Tournament Times section */
-.bckfc-tournament-timeline {
-  padding: 24px 0;
-  background: var(--bckfc-ink);
-  color: white;
-  /* Extend the background using the same approach as the tickets section. */
-  border-image: linear-gradient(var(--bckfc-ink), var(--bckfc-ink)) fill 0 / 0 / 0 100vw;
-}
 #main .bckfc-tournament-timeline :is(h2, h3) {
   margin: 0 0 16px;
   color: inherit;
@@ -850,9 +878,6 @@ time.bckfc-event-highlight__value span {
   }
 }
 @media (min-width: 768px) {
-  .bckfc-tournament-timeline {
-    padding: 32px 0;
-  }
   .bckfc-tournament-timeline__columns {
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
@@ -902,12 +927,6 @@ time.bckfc-event-highlight__value span {
 }
 
 /* Categories */
-.bckfc-event-categories {
-  padding: 24px 0;
-  background: var(--bckfc-gray);
-  color: var(--bckfc-ink);
-  border-image: linear-gradient(var(--bckfc-gray), var(--bckfc-gray)) fill 0 / 0 / 0 100vw;
-}
 #main .bckfc-event-categories h2 {
   margin: 0 0 16px;
   color: inherit;

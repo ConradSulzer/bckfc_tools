@@ -56,7 +56,7 @@ defined('ABSPATH') || exit();
     ?>
     <?= $contentMarkup ?>
     <?php if ($afterContentMarkup !== ''): ?>
-      <section id="bckfc-tickets" class="bckfc bckfc-event-tickets" aria-label="Event Tickets">
+      <section id="bckfc-tickets" class="bckfc bckfc-event-section bckfc-event-section--tan bckfc-event-tickets" aria-label="Event Tickets">
         <?php if ($settings['ticket_notice']): ?>
           <div class="bckfc-event-ticket-notice">
             <?= nl2br(esc_html($settings['ticket_notice'])) ?>

@@ -3,7 +3,7 @@ use BCKFC\Tools\Events\TournamentSettings;
 
 defined('ABSPATH') || exit();
 ?>
-<section class="bckfc bckfc-tournament-timeline">
+<section class="bckfc bckfc-event-section bckfc-event-section--ink bckfc-tournament-timeline">
     <div class="bckfc-tournament-timeline__columns">
         <?php if ($times): ?>
             <div class="bckfc-tournament-timeline__schedule">

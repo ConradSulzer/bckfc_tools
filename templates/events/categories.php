@@ -1,5 +1,5 @@
 <?php defined('ABSPATH') || exit(); ?>
-<section class="bckfc bckfc-event-categories">
+<section class="bckfc bckfc-event-section bckfc-event-section--gray bckfc-event-categories">
     <?php if ($heading !== ''): ?>
         <h2><?= esc_html($heading) ?></h2>
     <?php endif; ?>
