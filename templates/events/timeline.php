@@ -16,7 +16,9 @@ defined('ABSPATH') || exit();
                             <time datetime="<?= esc_attr($time) ?>"><?= esc_html(
     DateTimeImmutable::createFromFormat('!H:i', $time)->format('g:i A'),
 ) ?></time>
-                            <span><?= esc_html(TournamentSettings::TIME_FIELDS[$key]) ?></span>
+                            <span><?= esc_html(
+                                $timeLabels[$key] ?: TournamentSettings::TIME_FIELDS[$key],
+                            ) ?></span>
                         </li>
                     <?php endforeach; ?>
                 </ol>

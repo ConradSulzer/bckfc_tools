@@ -15,14 +15,14 @@ if (count($events) !== 2) {
 $previousPost = $GLOBALS['post'] ?? null;
 $times = array_combine(array_keys(TournamentSettings::TIME_FIELDS), [
     '00:00',
-    '05:00',
     '06:30',
     '14:00',
     '14:30',
     '15:00',
     '23:59',
+    '17:30',
 ]);
-$expectedTimes = ['12:00 AM', '5:00 AM', '6:30 AM', '2:00 PM', '2:30 PM', '3:00 PM', '11:59 PM'];
+$expectedTimes = ['12:00 AM', '6:30 AM', '2:00 PM', '2:30 PM', '3:00 PM', '11:59 PM', '5:30 PM'];
 
 // Override reads only within this process; no event records are created or changed.
 $metadata = static function ($value, $id, $key) use ($events, $times) {
@@ -36,6 +36,10 @@ $metadata = static function ($value, $id, $key) use ($events, $times) {
 
     if ($key === '_bckfc_registration_closes') {
         return [$id === $events[0]->ID ? '2027-03-19T20:00' : ''];
+    }
+
+    if ($key === '_bckfc_time_labels') {
+        return [['launch' => 'Shotgun Launch', 'awards_start' => 'Awards & Raffles']];
     }
 
     if ($key === '_bckfc_locations') {
@@ -65,6 +69,16 @@ add_filter('get_post_metadata', $metadata, 10, 3);
 
 try {
     $GLOBALS['post'] = $events[0];
+
+    $timeline = do_shortcode('[bckfc_tournament_timeline]');
+    $check(str_contains($timeline, 'Shotgun Launch'), true, 'Custom launch label');
+    $check(str_contains($timeline, 'Scales Close'), true, 'Blank label uses default');
+    $check(str_contains($timeline, esc_html('Awards & Raffles')), true, 'Escaped awards label');
+    $check(
+        TournamentSettings::sanitizeTimeLabels(['launch' => '<b>Launch Opens</b>'])['launch'],
+        'Launch Opens',
+        'Labels store plain text',
+    );
 
     $check(
         do_shortcode('[bckfc_event_date]'),

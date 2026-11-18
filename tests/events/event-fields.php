@@ -1,7 +1,7 @@
 <?php
 /** Run after bootstrapping local WordPress, e.g. php -r 'require ".../wp-load.php"; require "tests/events/event-fields.php";'. */
 use BCKFC\Tools\Events\TournamentSettings as Settings;
-use BCKFC\Tools\Events\TournamentSettingsPanel;
+use BCKFC\Tools\Events\TournamentSettingsEditor;
 use BCKFC\Tools\Events\TicketEditor;
 use BCKFC\Tools\Events\TicketSettings;
 
@@ -196,7 +196,7 @@ try {
     );
 
     ob_start();
-    TournamentSettingsPanel::renderTournamentSettings(get_post($event));
+    TournamentSettingsEditor::renderTournamentGeneralFields(get_post($event));
     $html = ob_get_clean();
 
     fieldCheck(

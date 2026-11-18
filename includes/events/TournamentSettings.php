@@ -9,12 +9,12 @@ final class TournamentSettings
     // Optional HH:MM values on the event day, in the event timezone.
     public const TIME_FIELDS = [
         'launch' => 'Launch',
-        'shotgun_launch' => 'Shotgun Launch',
         'lines_in' => 'Lines In',
         'lines_out' => 'Lines Out',
         'submission_cutoff' => 'Submission Cutoff',
         'scales_open' => 'Scales Open',
         'scales_close' => 'Scales Close',
+        'awards_start' => 'Awards Start',
     ];
 
     public static function getChampionshipSeriesCategories(): array
@@ -123,6 +123,14 @@ final class TournamentSettings
             update_post_meta($id, '_bckfc_times', $times);
         }
 
+        if (isset($input['time_labels'])) {
+            update_post_meta(
+                $id,
+                '_bckfc_time_labels',
+                self::sanitizeTimeLabels($input['time_labels']),
+            );
+        }
+
         if ($registrationCloses !== null) {
             update_post_meta($id, '_bckfc_registration_closes', $registrationCloses);
         }
@@ -139,6 +147,25 @@ final class TournamentSettings
         $values = get_post_meta($eventId, '_bckfc_times', false);
 
         return self::normalizeEventTimes($values[0] ?? []);
+    }
+
+    public static function getEventTimeLabels(int $eventId): array
+    {
+        return self::sanitizeTimeLabels(get_post_meta($eventId, '_bckfc_time_labels', true));
+    }
+
+    public static function sanitizeTimeLabels($input): array
+    {
+        $input = is_array($input) ? $input : [];
+        $labels = [];
+
+        foreach (self::TIME_FIELDS as $key => $defaultLabel) {
+            $labels[$key] = is_string($input[$key] ?? null)
+                ? sanitize_text_field($input[$key])
+                : '';
+        }
+
+        return $labels;
     }
 
     public static function normalizeEventTimes($input): array

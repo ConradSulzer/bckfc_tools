@@ -60,6 +60,8 @@ final class TournamentTimeline
             return '';
         }
 
+        $timeLabels = TournamentSettings::getEventTimeLabels($eventId);
+
         asort($times, SORT_STRING);
         $attributes = shortcode_atts(['heading' => 'Tournament Times'], $attributes);
         $heading = $attributes['heading'];

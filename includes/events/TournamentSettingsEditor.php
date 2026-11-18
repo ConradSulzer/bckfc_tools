@@ -2,11 +2,10 @@
 namespace BCKFC\Tools\Events;
 
 /** WordPress event editor UI and request handling. No custom tables or duplicate event records. */
-final class TournamentSettingsPanel
+final class TournamentSettingsEditor
 {
     public static function registerHooks(): void
     {
-        add_action('add_meta_boxes_tribe_events', [self::class, 'addTournamentSettingsMetaBox']);
         add_action(
             'wp_after_insert_post',
             [self::class, 'saveTournamentSettingsFromRequest'],
@@ -16,18 +15,6 @@ final class TournamentSettingsPanel
         add_action('set_object_terms', [self::class, 'clearChampionshipWhenSeriesRemoved'], 20, 4);
         add_action('admin_notices', [self::class, 'displayAdminErrorNotice']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueueEventEditorAssets']);
-    }
-
-    public static function addTournamentSettingsMetaBox(): void
-    {
-        add_meta_box(
-            'bckfc-tournament-settings',
-            'BCKFC Tournament Settings',
-            [self::class, 'renderTournamentSettings'],
-            'tribe_events',
-            'normal',
-            'high',
-        );
     }
 
     public static function enqueueEventEditorAssets(): void
@@ -56,20 +43,12 @@ final class TournamentSettingsPanel
         );
     }
 
-    public static function renderTournamentSettings(\WP_Post $post): void
+    public static function renderTournamentGeneralFields(\WP_Post $post): void
     {
         $settings = TournamentSettings::getEventSettings($post->ID);
         $series = TournamentSettings::getChampionshipSeriesCategories();
 
         wp_nonce_field('bckfc_event_' . $post->ID, 'bckfc_event_nonce');
-
-        echo '<div class="bckfc-event-editor">';
-        echo '<div class="bckfc-event-editor-tabs" role="tablist" aria-label="Tournament Settings">';
-        echo '<button type="button" role="tab" id="bckfc-tournament-general-tab" aria-controls="bckfc-tournament-general" aria-selected="true" tabindex="0">General</button>';
-        echo '<button type="button" role="tab" id="bckfc-tournament-locations-tab" aria-controls="bckfc-tournament-locations" aria-selected="false" tabindex="-1">Locations</button>';
-        echo '<button type="button" role="tab" id="bckfc-tournament-times-tab" aria-controls="bckfc-tournament-times" aria-selected="false" tabindex="-1">Times</button>';
-        echo '</div><div class="bckfc-event-editor-panels">';
-        echo '<div role="tabpanel" id="bckfc-tournament-general" aria-labelledby="bckfc-tournament-general-tab">';
 
         echo '<table class="eventtable eventForm"><colgroup><col style="width:15%"><col style="width:85%"></colgroup><tbody>';
         echo '<tr><td><label for="bckfc-format">Tournament Format:</label></td><td><select id="bckfc-format" name="bckfc_event[format]">';
@@ -125,20 +104,16 @@ final class TournamentSettingsPanel
         echo '</tbody></table>';
         echo '<p><strong>Example:</strong> Write <code>Registration closes [bckfc_registration_closes].</code> Anglers will see: <strong>Registration closes March 19, 2027 at 8:00 PM.</strong></p>';
         echo '<p class="description">Event Date uses the event’s start date. Registration Closes uses the event timezone and displays nothing when unset. Save date changes before previewing.</p>';
-        echo '</div>';
-        echo '<div role="tabpanel" id="bckfc-tournament-locations" aria-labelledby="bckfc-tournament-locations-tab" hidden>';
-        self::renderTournamentLocations($post->ID);
-        echo '</div><div role="tabpanel" id="bckfc-tournament-times" aria-labelledby="bckfc-tournament-times-tab" hidden>';
-        self::renderTournamentTimes($post->ID);
-        echo '</div></div></div>';
     }
 
-    private static function renderTournamentTimes(int $eventId): void
+    public static function renderTournamentTimes(int $eventId): void
     {
         $times = TournamentSettings::getEventTimes($eventId);
+        $labels = TournamentSettings::getEventTimeLabels($eventId);
 
         echo '<p class="description">All times are optional and use the event day and timezone. Save the event to keep time changes.</p>';
-        echo '<table class="eventtable eventForm"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><tbody>';
+        echo '<p class="description">Display labels change the timeline wording. Leave them blank to use the standard names. Shortcodes stay the same. Launch is when anglers may leave the launch area; describe early staging or other restrictions in the event content.</p>';
+        echo '<table class="eventtable eventForm"><colgroup><col style="width:25%"><col style="width:25%"><col style="width:50%"></colgroup><thead><tr><th scope="col">Milestone</th><th scope="col">Time</th><th scope="col">Display Label (Optional)</th></tr></thead><tbody>';
 
         foreach (TournamentSettings::TIME_FIELDS as $key => $label) {
             $id = 'bckfc-time-' . $key;
@@ -154,6 +129,20 @@ final class TournamentSettingsPanel
                 esc_attr($key) .
                 ']" value="' .
                 esc_attr($times[$key]) .
+                '">';
+            echo '</td><td><label class="screen-reader-text" for="' .
+                esc_attr($id . '-label') .
+                '">' .
+                esc_html($label . ' Display Label') .
+                '</label>';
+            echo '<input type="text" class="regular-text" id="' .
+                esc_attr($id . '-label') .
+                '" name="bckfc_event[time_labels][' .
+                esc_attr($key) .
+                ']" value="' .
+                esc_attr($labels[$key]) .
+                '" placeholder="' .
+                esc_attr($label) .
                 '">';
             echo '</td></tr>';
         }
@@ -176,7 +165,7 @@ final class TournamentSettingsPanel
         echo '<p class="description">Save time changes before previewing. A blank time leaves an empty space in the sentence.</p>';
     }
 
-    private static function renderTournamentLocations(int $eventId): void
+    public static function renderTournamentLocations(int $eventId): void
     {
         $locations = TournamentSettings::getEventLocations($eventId);
 

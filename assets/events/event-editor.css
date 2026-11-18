@@ -35,6 +35,9 @@
   max-width: 100%;
   width: 100%;
 }
+.bckfc-event-editor-panels th[scope='col'] {
+  text-align: left;
+}
 .bckfc-event-editor-panels [data-bckfc-image-preview] img {
   max-width: 150px;
   height: auto;

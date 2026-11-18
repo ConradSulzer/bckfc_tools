@@ -55,7 +55,7 @@
     });
   });
 
-  const editor = document.querySelector('#bckfc-event-layout .bckfc-event-editor');
+  const editor = document.querySelector('#bckfc-event-settings .bckfc-event-editor');
 
   if (!editor) {
     return;
