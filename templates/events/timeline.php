@@ -31,15 +31,15 @@ defined('ABSPATH') || exit();
                         array_filter([$location['name'], $location['location']]),
                     ); ?>
                     <div class="bckfc-tournament-location">
+                        <h2><?php echo $key === 'fishing'
+                            ? 'Launch Location'
+                            : 'Weigh-In / Awards'; ?></h2>
                         <?php include dirname(__DIR__, 2) .
                             '/assets/icons/' .
                             ($key === 'fishing' ? 'map-pin.svg' : 'trophy.svg'); ?>
                         <?php if ($locationTitle !== ''): ?>
                             <h3><?= esc_html($locationTitle) ?></h3>
                         <?php endif; ?>
-                        <p class="bckfc-tournament-location__label"><?php echo $key === 'fishing'
-                            ? 'Launch Location'
-                            : 'Weigh-In / Awards'; ?></p>
                         <?php if ($location['address'] !== ''): ?>
                             <p class="bckfc-tournament-location__address"><?= esc_html(
                                 $location['address'],

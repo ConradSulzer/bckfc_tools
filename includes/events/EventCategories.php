@@ -32,6 +32,14 @@ final class EventCategories
                     'param_name' => 'element_content',
                     'value' => '[bckfc_category title="Category Name"][/bckfc_category]',
                 ],
+                [
+                    'type' => 'textarea',
+                    'heading' => 'Footer',
+                    'param_name' => 'footer',
+                    'value' => '',
+                    'description' =>
+                        'Optional content below the table. Supports standard WordPress content HTML, including headings, links, lists, tables, and images.',
+                ],
             ],
         ]);
 
@@ -65,9 +73,10 @@ final class EventCategories
 
     public static function renderCategories($attributes, $content = ''): string
     {
-        $attributes = shortcode_atts(['heading' => 'Categories'], $attributes);
+        $attributes = shortcode_atts(['heading' => 'Categories', 'footer' => ''], $attributes);
         $heading = $attributes['heading'];
         $rows = do_shortcode($content ?? '');
+        $footer = trim($attributes['footer']);
 
         ob_start();
         include dirname(__DIR__, 2) . '/templates/events/categories.php';

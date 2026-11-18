@@ -803,12 +803,10 @@ time.bckfc-event-highlight__value span {
 }
 #main .bckfc-tournament-location h3 {
   margin-bottom: 8px;
-}
-.bckfc-tournament-location__label {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--bckfc-font-body);
+  font-size: 1.75rem;
+  font-weight: 600;
+  text-transform: none;
 }
 #main .bckfc-tournament-location a {
   color: white;
@@ -827,12 +825,22 @@ time.bckfc-event-highlight__value span {
   margin-bottom: 0;
 }
 @media (max-width: 767px) {
+  #main .bckfc-tournament-location h3 {
+    font-size: 1.375rem;
+  }
   .bckfc-tournament-location + .bckfc-tournament-location {
-    margin-top: 40px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 255 255 / 25%);
   }
   .bckfc-tournament-timeline__columns {
     gap: 40px;
     text-align: center;
+  }
+  .bckfc-tournament-timeline__schedule + .bckfc-tournament-timeline__locations {
+    margin-top: -20px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 255 255 / 25%);
   }
   #main .bckfc-tournament-timeline__times {
     width: fit-content;
@@ -857,17 +865,29 @@ time.bckfc-event-highlight__value span {
     grid-row: 1 / span 5;
   }
   .bckfc-tournament-location {
+    position: relative;
     display: grid;
     grid-template-rows: subgrid;
     align-items: start;
   }
-  .bckfc-tournament-location > svg {
+  .bckfc-tournament-timeline__schedule
+    + .bckfc-tournament-timeline__locations
+    > .bckfc-tournament-location:first-child::before,
+  .bckfc-tournament-location + .bckfc-tournament-location::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -16px;
+    border-left: 1px solid rgb(255 255 255 / 25%);
+  }
+  .bckfc-tournament-location > h2 {
     grid-row: 1;
   }
-  .bckfc-tournament-location > h3 {
+  .bckfc-tournament-location > svg {
     grid-row: 2;
   }
-  .bckfc-tournament-location__label {
+  .bckfc-tournament-location > h3 {
     grid-row: 3;
   }
   .bckfc-tournament-location__address {
@@ -883,13 +903,13 @@ time.bckfc-event-highlight__value span {
 
 /* Categories */
 .bckfc-event-categories {
-  padding: 32px 0;
+  padding: 24px 0;
   background: var(--bckfc-gray);
   color: var(--bckfc-ink);
   border-image: linear-gradient(var(--bckfc-gray), var(--bckfc-gray)) fill 0 / 0 / 0 100vw;
 }
 #main .bckfc-event-categories h2 {
-  margin: 0 0 24px;
+  margin: 0 0 16px;
   color: inherit;
   font-size: clamp(1.5rem, 3vw, 2rem);
   text-transform: uppercase;
@@ -904,7 +924,7 @@ time.bckfc-event-highlight__value span {
 }
 #main .bckfc-event-categories__table :is(th, td) {
   font-family: var(--bckfc-font-body);
-  padding: 20px 24px;
+  padding: 12px 16px;
   text-align: left;
   vertical-align: top;
   border: 0;
@@ -918,11 +938,11 @@ time.bckfc-event-highlight__value span {
 #main .bckfc-event-categories__table tbody th {
   width: 25%;
   font-family: var(--bckfc-font-heading);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   text-transform: uppercase;
 }
 #main .bckfc-event-categories__table p {
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
 #main .bckfc-event-categories__table p:last-child {
   margin-bottom: 0;
@@ -934,6 +954,23 @@ time.bckfc-event-highlight__value span {
 #main .bckfc-event-categories__table tbody tr:last-child > * {
   border-bottom: 0;
 }
+.bckfc-event-categories__footer {
+  padding: 16px;
+  border-top: 1px solid #e5e5e5;
+  background: #e5e5e5;
+}
+#main .bckfc-event-categories__footer :is(h2, h3, h4, h5, h6) {
+  margin: 0 0 8px;
+  color: inherit;
+  font-size: 1.125rem;
+  text-transform: uppercase;
+}
+#main .bckfc-event-categories__footer p {
+  margin: 0 0 8px;
+}
+#main .bckfc-event-categories__footer > :last-child {
+  margin-bottom: 0;
+}
 @media (max-width: 767px) {
   .bckfc-event-categories__table thead {
     display: none;
@@ -944,7 +981,7 @@ time.bckfc-event-highlight__value span {
     display: block;
   }
   .bckfc-event-categories__table tbody tr {
-    padding: 20px;
+    padding: 12px;
     border-bottom: 1px solid #e5e5e5;
   }
   .bckfc-event-categories__table tbody tr:last-child {
@@ -957,6 +994,9 @@ time.bckfc-event-highlight__value span {
     border: 0;
   }
   #main .bckfc-event-categories__table td:not(:empty) {
-    margin-top: 8px;
+    margin-top: 4px;
+  }
+  .bckfc-event-categories__footer {
+    padding: 12px;
   }
 }

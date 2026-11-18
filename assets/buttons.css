@@ -7,14 +7,15 @@
 }
 
 /*
- * Shared styles for BCKFC buttons, including the BCFKC event template header links.
- * Also restyles Tribe's existing Get Tickets button on the event page and
+ * Shared styles for BCKFC buttons, including the BCKFC event template header links.
+ * Also restyles Tribe's Get Tickets and Log in to purchase buttons on the event page and
  * Checkout Now button in the attendee modal, within #main #bckfc-tickets.
  * Tribe keeps its native markup and purchase behavior; no template override.
  */
 :is(
   .bckfc .bckfc-button,
   #main #bckfc-tickets .tribe-tickets__tickets-buy,
+  #main #bckfc-tickets .tribe-tickets__tickets-footer > a.tribe-common-c-btn,
   #main #bckfc-tickets .tribe-tickets__attendee-tickets-footer-checkout-button
 ) {
   display: inline-flex;
@@ -52,6 +53,7 @@
 :is(
     .bckfc .bckfc-button,
     #main #bckfc-tickets .tribe-tickets__tickets-buy,
+    #main #bckfc-tickets .tribe-tickets__tickets-footer > a.tribe-common-c-btn,
     #main #bckfc-tickets .tribe-tickets__attendee-tickets-footer-checkout-button
   ):hover:not(:disabled) {
   background: var(--bckfc-button-hover-background);
@@ -62,6 +64,7 @@
 :is(
   .bckfc .bckfc-button,
   #main #bckfc-tickets .tribe-tickets__tickets-buy,
+  #main #bckfc-tickets .tribe-tickets__tickets-footer > a.tribe-common-c-btn,
   #main #bckfc-tickets .tribe-tickets__attendee-tickets-footer-checkout-button
 ):focus-visible {
   outline: 2px solid white;
@@ -72,6 +75,7 @@
 :is(
   .bckfc .bckfc-button,
   #main #bckfc-tickets .tribe-tickets__tickets-buy,
+  #main #bckfc-tickets .tribe-tickets__tickets-footer > a.tribe-common-c-btn,
   #main #bckfc-tickets .tribe-tickets__attendee-tickets-footer-checkout-button
 ):disabled {
   background: var(--bckfc-button-disabled-background);
@@ -89,6 +93,7 @@
   :is(
     .bckfc .bckfc-button,
     #main #bckfc-tickets .tribe-tickets__tickets-buy,
+    #main #bckfc-tickets .tribe-tickets__tickets-footer > a.tribe-common-c-btn,
     #main #bckfc-tickets .tribe-tickets__attendee-tickets-footer-checkout-button
   ) {
     transition: none;

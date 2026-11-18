@@ -9,4 +9,9 @@
         </thead>
         <tbody><?= $rows ?></tbody>
     </table>
+    <?php if ($footer !== ''): ?>
+        <div class="bckfc-event-categories__footer">
+            <?= wpautop(wp_kses_post($footer)) ?>
+        </div>
+    <?php endif; ?>
 </section>
