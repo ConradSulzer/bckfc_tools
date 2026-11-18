@@ -89,10 +89,12 @@ final class TournamentSettingsPanel
             );
         }
 
-        echo '</select>';
+        echo '</select><input type="hidden" name="bckfc_event[original_series]" value="' .
+            esc_attr((string) ($settings['series'][0] ?? 0)) .
+            '">';
 
         if (count($settings['series']) > 1) {
-            echo '<p class="description">This event has multiple series categories. Saving this panel will keep only the selected series.</p>';
+            echo '<p class="description">This event has multiple series categories. Changing this selector will keep only the selected series.</p>';
         }
 
         if (!$series) {
@@ -295,7 +297,17 @@ final class TournamentSettingsPanel
         }
 
         try {
-            TournamentSettings::saveEventSettings($id, wp_unslash($_POST['bckfc_event']));
+            $input = wp_unslash($_POST['bckfc_event']);
+
+            // An untouched selector must not undo edits made in native Categories.
+            if (
+                isset($input['original_series']) &&
+                $input['series'] === $input['original_series']
+            ) {
+                unset($input['series']);
+            }
+
+            TournamentSettings::saveEventSettings($id, $input);
         } catch (\InvalidArgumentException | \RuntimeException $e) {
             self::queueAdminErrorNotice(
                 'BCKFC tournament settings were not saved: ' . $e->getMessage(),

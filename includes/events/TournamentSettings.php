@@ -74,36 +74,40 @@ final class TournamentSettings
             throw new \InvalidArgumentException('Choose Weigh-in or CPR/CPS.');
         }
 
-        $series = filter_var($input['series'] ?? 0, FILTER_VALIDATE_INT);
-        $ids = array_map(
-            'intval',
-            array_column(self::getChampionshipSeriesCategories(), 'term_id'),
-        );
-
-        if ($series === false || ($series !== 0 && !in_array($series, $ids, true))) {
-            throw new \InvalidArgumentException(
-                'Choose a yearly category under Championship Series.',
+        if (isset($input['series'])) {
+            $series = filter_var($input['series'], FILTER_VALIDATE_INT);
+            $ids = array_map(
+                'intval',
+                array_column(self::getChampionshipSeriesCategories(), 'term_id'),
             );
+
+            if ($series === false || ($series !== 0 && !in_array($series, $ids, true))) {
+                throw new \InvalidArgumentException(
+                    'Choose a yearly category under Championship Series.',
+                );
+            }
+
+            $existing = wp_get_object_terms($id, self::TAXONOMY, ['fields' => 'ids']);
+
+            if (is_wp_error($existing)) {
+                throw new \RuntimeException($existing->get_error_message());
+            }
+
+            // Replace only series membership. All unrelated event categories remain intact.
+            $categories = array_values(array_diff($existing, $ids));
+
+            if ($series) {
+                $categories[] = $series;
+            }
+
+            $result = wp_set_object_terms($id, array_map('intval', $categories), self::TAXONOMY);
+
+            if (is_wp_error($result)) {
+                throw new \RuntimeException($result->get_error_message());
+            }
         }
 
-        $existing = wp_get_object_terms($id, self::TAXONOMY, ['fields' => 'ids']);
-
-        if (is_wp_error($existing)) {
-            throw new \RuntimeException($existing->get_error_message());
-        }
-
-        // Replace only series membership. All unrelated event categories remain intact.
-        $categories = array_values(array_diff($existing, $ids));
-
-        if ($series) {
-            $categories[] = $series;
-        }
-
-        $result = wp_set_object_terms($id, array_map('intval', $categories), self::TAXONOMY);
-
-        if (is_wp_error($result)) {
-            throw new \RuntimeException($result->get_error_message());
-        }
+        $hasSeries = (bool) self::getEventSettings($id)['series'];
 
         if (isset($input['locations']) && is_array($input['locations'])) {
             update_post_meta(
@@ -126,7 +130,7 @@ final class TournamentSettings
         update_post_meta(
             $id,
             '_bckfc_championship',
-            $series && !empty($input['championship']) ? 1 : 0,
+            $hasSeries && !empty($input['championship']) ? 1 : 0,
         );
     }
 
