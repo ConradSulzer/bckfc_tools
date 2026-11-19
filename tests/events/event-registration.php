@@ -73,8 +73,7 @@ try {
         ['v2', 'tickets'],
         $template,
     );
-    $check(str_contains($render(), 'inert aria-hidden="true"'), 'Guest picker must be inert.');
-    $check(str_contains($render(), 'redirect_to='), 'Login must have a return destination.');
+    $check($render() === $picker, 'Native picker markup must remain unchanged for guests.');
 
     $userId = get_users(['number' => 1, 'fields' => 'ID'])[0];
     wp_set_current_user($userId);

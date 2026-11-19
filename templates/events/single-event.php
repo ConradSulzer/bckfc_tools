@@ -1,5 +1,6 @@
 <?php
 use BCKFC\Tools\Events\BckfcEventLayout;
+use BCKFC\Tools\Events\EventLoginRequirement;
 
 defined('ABSPATH') || exit();
 ?>
@@ -24,6 +25,11 @@ defined('ABSPATH') || exit();
       'renderRegistrationDeadline',
     ]);
 
+    add_action('tribe_template_before_include:tickets/v2/tickets/notice', [
+      EventLoginRequirement::class,
+      'renderPurchaseInstructions',
+    ], 10, 3);
+
     // Capture native after-content integrations, including tickets and RSVP.
     // Providers keep their configured hooks; this output is not exclusively tickets.
     do_action('tribe_events_single_event_after_the_content');
@@ -32,6 +38,10 @@ defined('ABSPATH') || exit();
     remove_action('tribe_template_after_include:tickets/v2/tickets/title', [
       BckfcEventLayout::class,
       'renderRegistrationDeadline',
+    ]);
+    remove_action('tribe_template_before_include:tickets/v2/tickets/notice', [
+      EventLoginRequirement::class,
+      'renderPurchaseInstructions',
     ]);
     $afterContentMarkup = trim(ob_get_clean());
     $settings = BckfcEventLayout::getLayoutSettings(get_the_ID());
@@ -50,13 +60,20 @@ defined('ABSPATH') || exit();
       }
     }
 
+    $showLoginPrompt = $hasTicketPicker &&
+      EventLoginRequirement::requiresLogin(get_the_ID()) &&
+      !is_user_logged_in();
+
     // Load the header
     BckfcEventLayout::renderEventHeader(get_the_ID(), $hasTicketPicker);
     BckfcEventLayout::renderEventHighlights(get_the_ID());
     ?>
     <?= $contentMarkup ?>
     <?php if ($afterContentMarkup !== ''): ?>
-      <section id="bckfc-tickets" class="bckfc bckfc-event-section bckfc-event-section--tan bckfc-event-tickets" aria-label="Event Tickets">
+      <section id="bckfc-tickets" class="bckfc bckfc-event-section bckfc-event-section--tan bckfc-event-tickets<?= $showLoginPrompt ? ' bckfc-registration-gate' : '' ?>" aria-label="Event Tickets">
+        <?php if ($showLoginPrompt): ?>
+          <div class="bckfc-registration-gate__content" inert aria-hidden="true">
+        <?php endif; ?>
         <?php if ($settings['ticket_notice']): ?>
           <div class="bckfc-event-ticket-notice">
             <?= nl2br(esc_html($settings['ticket_notice'])) ?>
@@ -64,6 +81,13 @@ defined('ABSPATH') || exit();
         <?php endif; ?>
 
         <?= $afterContentMarkup ?>
+        <?php if ($showLoginPrompt): ?>
+          </div>
+          <div class="bckfc-registration-gate__prompt"><div>
+            <p class="bckfc-registration-instructions"><?= esc_html(EventLoginRequirement::PURCHASE_INSTRUCTIONS) ?></p>
+            <a class="bckfc-button" href="<?= esc_url(wp_login_url(get_permalink())) ?>">Log In to Purchase Tickets</a>
+          </div></div>
+        <?php endif; ?>
       </section>
     <?php endif; ?>
   <?php endwhile; ?>

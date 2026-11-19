@@ -4,6 +4,8 @@ namespace BCKFC\Tools\Events;
 /** Event login requirements; WooCommerce still owns purchases and quantities. */
 final class EventLoginRequirement
 {
+  public const PURCHASE_INSTRUCTIONS = 'Each angler must be logged in and purchase their own tickets for this event.';
+
   public static function registerHooks(): void
   {
     // runs on cart add for a given product
@@ -20,15 +22,7 @@ final class EventLoginRequirement
     // runs when paying for an item which can bypass the cart 
     add_action('woocommerce_before_pay_action', [self::class, 'validateOrderPaymentLogin']);
 
-    // runs after tribe renders the ticket picker, we wrap and blur the picker if not logged in
-    add_filter(
-      'tribe_template_html:tickets/v2/tickets',
-      [self::class, 'renderTicketLoginOverlay'],
-      10,
-      4,
-    );
-
-    // onyl load the CSS if the pages requires login
+    // Load registration presentation only for our event template.
     add_action('wp_enqueue_scripts', [self::class, 'enqueueRegistrationStyles']);
   }
 
@@ -104,56 +98,33 @@ final class EventLoginRequirement
     }
   }
 
-  public static function renderTicketLoginOverlay(
-    string $html,
-    $file,
-    array $name,
-    $template,
-  ): string {
-    $eventId = (int) $template->get('post_id');
-
-    if ($html === '' || !self::requiresLogin($eventId)) {
-      return $html;
+  public static function renderPurchaseInstructions($file, array $name, $template): void
+  {
+    if (!is_user_logged_in() || !self::requiresLogin((int) $template->get('post_id'))) {
+      return;
     }
 
-    $instructions =
-      '<p class="bckfc-registration-instructions">Each angler must be logged in and purchase their own tickets for this event.</p>';
-
-    if (is_user_logged_in()) {
-      return $instructions . $html;
-    }
-
-    $loginUrl = wp_login_url(get_permalink($eventId));
-
-    return '<div class="bckfc bckfc-registration-gate">' .
-      '<div class="bckfc-registration-gate__picker" inert aria-hidden="true">' .
-      $html .
-      '</div>' .
-      '<div class="bckfc-registration-gate__prompt"><div>' .
-      $instructions .
-      '<a class="bckfc-button" href="' .
-      esc_url($loginUrl) .
-      '">Log In to Purchase Tickets</a>' .
-      '</div></div></div>';
+    echo '<p class="bckfc bckfc-registration-instructions bckfc-registration-instructions--notice">' .
+      esc_html(self::PURCHASE_INSTRUCTIONS) . '</p>';
   }
 
   public static function enqueueRegistrationStyles(): void
   {
-    if (!is_singular('tribe_events') || !self::requiresLogin(get_queried_object_id())) {
+    if (
+      !is_singular('tribe_events') ||
+      !BckfcEventLayout::usesCustomTemplate(get_queried_object_id()) ||
+      !self::requiresLogin(get_queried_object_id())
+    ) {
       return;
     }
 
     $root = dirname(__DIR__, 2);
 
-    foreach (['design-tokens', 'buttons', 'events/event-registration'] as $asset) {
-      $handle = 'bckfc-' . basename($asset);
-
-      wp_enqueue_style(
-        $handle,
-        plugins_url('assets/' . $asset . '.css', $root . '/bckfc-tools.php'),
-        [],
-        (string) filemtime($root . '/assets/' . $asset . '.css'),
-      );
-    }
+    wp_enqueue_style(
+      'bckfc-event-registration',
+      plugins_url('assets/events/event-registration.css', $root . '/bckfc-tools.php'),
+      ['bckfc-event-layout'],
+      (string) filemtime($root . '/assets/events/event-registration.css'),
+    );
   }
 }

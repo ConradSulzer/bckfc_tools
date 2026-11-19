@@ -1,16 +1,15 @@
 .bckfc-registration-gate {
   display: grid;
-  isolation: isolate;
   --bckfc-font-heading: inherit;
 }
 
-.bckfc-registration-gate__picker,
+.bckfc-registration-gate__content,
 .bckfc-registration-gate__prompt {
   grid-area: 1 / 1;
   min-width: 0;
 }
 
-.bckfc-registration-gate__picker {
+.bckfc-registration-gate__content {
   filter: blur(2px);
   opacity: 0.7;
   pointer-events: none;
@@ -23,7 +22,6 @@
   place-items: center;
   padding: 24px 12px;
   text-align: center;
-  background: rgb(255 255 255 / 40%);
 }
 
 .bckfc-registration-gate__prompt > div {
@@ -32,4 +30,15 @@
 
 .bckfc-registration-instructions {
   margin: 0 0 16px;
+}
+
+.tribe-tickets__tickets-form .bckfc-registration-instructions--notice {
+  clear: both;
+  margin: 0 0 12px;
+  padding: 4px 8px;
+  border-left: 3px solid var(--bckfc-orange);
+  color: var(--bckfc-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
