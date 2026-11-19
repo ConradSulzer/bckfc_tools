@@ -26,12 +26,11 @@ final class TournamentSettingsEditor
         }
 
         $root = dirname(__DIR__, 2);
-        wp_enqueue_media();
 
         wp_enqueue_script(
             'bckfc-event-editor',
             plugins_url('assets/events/event-editor.js', $root . '/bckfc-tools.php'),
-            ['jquery', 'autosave'],
+            [],
             (string) filemtime($root . '/assets/events/event-editor.js'),
             true,
         );
