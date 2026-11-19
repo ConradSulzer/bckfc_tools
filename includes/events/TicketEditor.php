@@ -8,19 +8,19 @@ final class TicketEditor
     {
         add_action(
             'tribe_events_tickets_metabox_edit_main',
-            [self::class, 'renderTicketTypeField'],
+            [self::class, 'renderTicketSettingsFields'],
             10,
             3,
         );
         add_action(
             'event_tickets_after_save_ticket',
-            [self::class, 'saveTicketTypeFromRequest'],
+            [self::class, 'saveTicketSettingsFromRequest'],
             10,
             4,
         );
     }
 
-    public static function renderTicketTypeField($eventId, $ticketId, $type): void
+    public static function renderTicketSettingsFields($eventId, $ticketId, $type): void
     {
         $eventId = (int) $eventId;
         $ticketId = (int) $ticketId;
@@ -44,9 +44,18 @@ final class TicketEditor
         }
 
         echo '</select></div>';
+
+        $product = $ticketId ? wc_get_product($ticketId) : false;
+        $soldIndividually = $product && $product->is_sold_individually();
+
+        echo '<div class="input_block"><span class="ticket_form_label ticket_form_left">Purchase Limit:</span><label class="ticket_form_right" for="bckfc-ticket-sold-individually">';
+        echo '<input type="hidden" name="bckfc_ticket[sold_individually]" value="0">';
+        echo '<input type="checkbox" id="bckfc-ticket-sold-individually" name="bckfc_ticket[sold_individually]" value="1" ' .
+            checked($soldIndividually, true, false) .
+            '> Limit to One per Order</label></div>';
     }
 
-    public static function saveTicketTypeFromRequest(
+    public static function saveTicketSettingsFromRequest(
         $eventId,
         $ticket,
         array $data,

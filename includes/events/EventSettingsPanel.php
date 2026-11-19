@@ -174,6 +174,20 @@ final class EventSettingsPanel
         </div>
         <div role="tabpanel" id="bckfc-panel-registration" aria-labelledby="bckfc-tab-registration" hidden>
           <table class="form-table">
+            <tr>
+              <th>Require Login</th>
+              <td>
+                <input type="hidden" name="bckfc_event[require_login]" value="0">
+                <label for="bckfc-require-login">
+                  <input type="checkbox" id="bckfc-require-login" name="bckfc_event[require_login]" value="1"
+                    <?= checked(EventLoginRequirement::requiresLogin($post->ID), true, false) ?>>
+                  Require Login to Purchase Tickets
+                </label>
+                <p class="description">Applies to all tickets for this event.</p>
+              </td>
+            </tr>
+          </table>
+          <table class="form-table">
             <tbody>
               <tr>
                 <th>Coming Soon</th>

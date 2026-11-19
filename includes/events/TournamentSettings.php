@@ -49,6 +49,7 @@ final class TournamentSettings
 
         return [
             'format' => (string) get_post_meta($id, '_bckfc_format', true),
+            'require_login' => (bool) get_post_meta($id, '_bckfc_require_login', true),
             'registration_closes' => (string) get_post_meta(
                 $id,
                 '_bckfc_registration_closes',
@@ -129,6 +130,10 @@ final class TournamentSettings
                 '_bckfc_time_labels',
                 self::sanitizeTimeLabels($input['time_labels']),
             );
+        }
+
+        if (isset($input['require_login'])) {
+            update_post_meta($id, '_bckfc_require_login', empty($input['require_login']) ? 0 : 1);
         }
 
         if ($registrationCloses !== null) {

@@ -31,5 +31,11 @@ final class TicketSettings
         }
 
         update_post_meta($id, '_bckfc_ticket_purpose', $purpose);
+
+        if (isset($input['sold_individually'])) {
+            $product = wc_get_product($id);
+            $product->set_sold_individually(!empty($input['sold_individually']));
+            $product->save();
+        }
     }
 }

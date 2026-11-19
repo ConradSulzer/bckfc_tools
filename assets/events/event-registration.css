@@ -1,0 +1,35 @@
+.bckfc-registration-gate {
+  display: grid;
+  isolation: isolate;
+  --bckfc-font-heading: inherit;
+}
+
+.bckfc-registration-gate__picker,
+.bckfc-registration-gate__prompt {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.bckfc-registration-gate__picker {
+  filter: blur(2px);
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bckfc-registration-gate__prompt {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px 12px;
+  text-align: center;
+  background: rgb(255 255 255 / 40%);
+}
+
+.bckfc-registration-gate__prompt > div {
+  max-width: 32rem;
+}
+
+.bckfc-registration-instructions {
+  margin: 0 0 16px;
+}
