@@ -15,6 +15,12 @@ final class TournamentSettingsEditor
         add_action('set_object_terms', [self::class, 'clearChampionshipWhenSeriesRemoved'], 20, 4);
         add_action('admin_notices', [self::class, 'displayAdminErrorNotice']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueueEventEditorAssets']);
+        add_filter('fusion_builder_allowed_post_types', [self::class, 'enableEventBuilder']);
+    }
+
+    public static function enableEventBuilder(array $postTypes): array
+    {
+        return array_values(array_unique([...$postTypes, 'tribe_events']));
     }
 
     public static function enqueueEventEditorAssets(): void
