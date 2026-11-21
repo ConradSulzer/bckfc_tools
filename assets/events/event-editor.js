@@ -20,6 +20,31 @@
 
   updateChampionshipVisibility();
 
+  document.querySelectorAll('[data-bckfc-size-limits]').forEach((editor) => {
+    const rows = editor.querySelector('tbody');
+    const template = editor.querySelector('template');
+    let nextIndex = rows.children.length;
+
+    editor.querySelector('[data-bckfc-add-size-limit]').addEventListener('click', () => {
+      const row = template.content.cloneNode(true);
+
+      row.querySelectorAll('input').forEach((input) => {
+        input.name = input.name.replace('__index__', nextIndex);
+      });
+
+      nextIndex += 1;
+      rows.append(row);
+      rows.lastElementChild.querySelector('input').focus();
+    });
+
+    rows.addEventListener('click', (event) => {
+      if (event.target.closest('[data-bckfc-remove-size-limit]')) {
+        event.target.closest('tr').remove();
+        editor.querySelector('[data-bckfc-add-size-limit]').focus();
+      }
+    });
+  });
+
   document.querySelectorAll('[data-bckfc-time-tbd]').forEach((checkbox) => {
     const input = document.getElementById(checkbox.dataset.bckfcTimeTbd);
 
@@ -61,56 +86,5 @@
         tabs[next].focus();
       });
     });
-  });
-
-  const editor = document.querySelector('#bckfc-event-settings .bckfc-event-editor');
-
-  if (!editor) {
-    return;
-  }
-
-  // connect our image pickers to WP native media picker.
-  editor.querySelectorAll('[data-bckfc-image]').forEach((field) => {
-    const input = field.querySelector('input');
-    const preview = field.querySelector('[data-bckfc-image-preview]');
-    const remove = field.querySelector('[data-bckfc-image-remove]');
-
-    field.querySelector('[data-bckfc-image-select]').addEventListener('click', () => {
-      const picker = wp.media({
-        title: 'Select Image',
-        library: { type: 'image' },
-        multiple: false,
-      });
-
-      picker.on('select', () => {
-        const attachment = picker.state().get('selection').first().toJSON();
-        const image = document.createElement('img');
-        image.src = attachment.sizes?.thumbnail?.url || attachment.url;
-        image.alt = attachment.alt || '';
-        preview.replaceChildren(image);
-        input.value = attachment.id;
-        remove.hidden = false;
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-      });
-
-      picker.open();
-    });
-
-    remove.addEventListener('click', () => {
-      input.value = '0';
-      preview.replaceChildren();
-      remove.hidden = true;
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-  });
-
-  // Include our layout values in WordPress's preview/autosave request.
-  jQuery(document).on('before-autosave', (event, data) => {
-    const values = {};
-    editor.querySelectorAll('[name^="_bckfc_event_layout["]').forEach((input) => {
-      const key = input.name.match(/\[([^\]]+)\]/)[1];
-      values[key] = input.type === 'checkbox' ? (input.checked ? '1' : '0') : input.value;
-    });
-    data._bckfc_event_layout = values;
   });
 })();

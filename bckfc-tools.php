@@ -21,26 +21,15 @@ require_once __DIR__ . '/includes/rodeo-export/ExportController.php';
 add_action('rest_api_init', [BCKFC\Tools\RodeoExport\ExportController::class, 'register']);
 
 require_once __DIR__ . '/includes/events/TournamentSettings.php';
-require_once __DIR__ . '/includes/events/TournamentSettingsEditor.php';
 require_once __DIR__ . '/includes/events/TicketSettings.php';
+require_once __DIR__ . '/includes/events/EventLoginRequirement.php';
+require_once __DIR__ . '/includes/events/TournamentSettingsEditor.php';
 require_once __DIR__ . '/includes/events/TicketEditor.php';
+require_once __DIR__ . '/includes/events/EventSettingsPanel.php';
+require_once __DIR__ . '/includes/events/EventShortcodes.php';
 
 BCKFC\Tools\Events\TournamentSettingsEditor::registerHooks();
 BCKFC\Tools\Events\TicketEditor::registerHooks();
-
-require_once __DIR__ . '/includes/events/EventShortcodes.php';
-BCKFC\Tools\Events\EventShortcodes::registerHooks();
-
-require_once __DIR__ . '/includes/events/BckfcEventLayout.php';
-require_once __DIR__ . '/includes/events/EventSettingsPanel.php';
-
-BCKFC\Tools\Events\BckfcEventLayout::registerHooks();
 BCKFC\Tools\Events\EventSettingsPanel::registerHooks();
-
-require_once __DIR__ . '/includes/events/TournamentTimeline.php';
-BCKFC\Tools\Events\TournamentTimeline::registerHooks();
-require_once __DIR__ . '/includes/events/EventCategories.php';
-BCKFC\Tools\Events\EventCategories::registerHooks();
-
-require_once __DIR__ . '/includes/events/EventLoginRequirement.php';
+BCKFC\Tools\Events\EventShortcodes::registerHooks();
 BCKFC\Tools\Events\EventLoginRequirement::registerHooks();

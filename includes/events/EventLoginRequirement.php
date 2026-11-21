@@ -4,8 +4,6 @@ namespace BCKFC\Tools\Events;
 /** Event login requirements; WooCommerce still owns purchases and quantities. */
 final class EventLoginRequirement
 {
-  public const PURCHASE_INSTRUCTIONS = 'Each angler must be logged in and purchase their own tickets for this event.';
-
   public static function registerHooks(): void
   {
     // runs on cart add for a given product
@@ -19,11 +17,9 @@ final class EventLoginRequirement
     // runs when validating the cart, including during checkout
     add_action('woocommerce_check_cart_items', [self::class, 'validateCartLogin']);
 
-    // runs when paying for an item which can bypass the cart 
+    // runs when paying for an item which can bypass the cart
     add_action('woocommerce_before_pay_action', [self::class, 'validateOrderPaymentLogin']);
 
-    // Load registration presentation only for our event template.
-    add_action('wp_enqueue_scripts', [self::class, 'enqueueRegistrationStyles']);
   }
 
   public static function requiresLogin(int $eventId): bool
@@ -96,35 +92,5 @@ final class EventLoginRequirement
         return;
       }
     }
-  }
-
-  public static function renderPurchaseInstructions($file, array $name, $template): void
-  {
-    if (!is_user_logged_in() || !self::requiresLogin((int) $template->get('post_id'))) {
-      return;
-    }
-
-    echo '<p class="bckfc bckfc-registration-instructions bckfc-registration-instructions--notice">' .
-      esc_html(self::PURCHASE_INSTRUCTIONS) . '</p>';
-  }
-
-  public static function enqueueRegistrationStyles(): void
-  {
-    if (
-      !is_singular('tribe_events') ||
-      !BckfcEventLayout::usesCustomTemplate(get_queried_object_id()) ||
-      !self::requiresLogin(get_queried_object_id())
-    ) {
-      return;
-    }
-
-    $root = dirname(__DIR__, 2);
-
-    wp_enqueue_style(
-      'bckfc-event-registration',
-      plugins_url('assets/events/event-registration.css', $root . '/bckfc-tools.php'),
-      ['bckfc-event-layout'],
-      (string) filemtime($root . '/assets/events/event-registration.css'),
-    );
   }
 }

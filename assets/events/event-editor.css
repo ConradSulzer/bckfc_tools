@@ -63,10 +63,6 @@
 .bckfc-time-controls input[type='checkbox'] {
   margin: 0;
 }
-.bckfc-event-editor-panels [data-bckfc-image-preview] img {
-  max-width: 150px;
-  height: auto;
-}
 .bckfc-event-editor [hidden] {
   display: none;
 }
