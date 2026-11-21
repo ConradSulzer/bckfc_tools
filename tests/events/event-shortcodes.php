@@ -38,6 +38,13 @@ $metadata = static function ($value, $id, $key) use ($events, $times) {
         return [$id === $events[0]->ID ? '2027-03-19T20:00' : ''];
     }
 
+    if ($key === '_bckfc_size_limits') {
+        return [$id === $events[0]->ID ? [
+            ['species' => 'Redfish & Drum', 'minimum' => '16"', 'maximum' => '< 26", cannot touch line'],
+            ['species' => 'Flounder', 'minimum' => '11"', 'maximum' => ''],
+        ] : []];
+    }
+
     if ($key === '_bckfc_time_labels') {
         return [['launch' => 'Shotgun Launch', 'awards_start' => 'Awards & Raffles']];
     }
@@ -70,6 +77,15 @@ add_filter('get_post_metadata', $metadata, 10, 3);
 try {
     $GLOBALS['post'] = $events[0];
 
+    $sizeLimitsContent = '[fusion_accordion][fusion_toggle title="Size Limits"][bckfc_size_limits][/fusion_toggle][/fusion_accordion]';
+    $table = do_shortcode($sizeLimitsContent);
+
+    foreach (['bckfc-size-limits', 'Redfish &amp; Drum', '&lt; 26&quot;, cannot touch line', 'Flounder'] as $expected) {
+        $check(str_contains($table, $expected), true, 'Size-limit table in Avada accordion: ' . $expected);
+    }
+
+    $check(str_contains($table, '[bckfc_size_limits]'), false, 'Nested size-limit shortcode resolved');
+
     $check(
         TournamentSettings::sanitizeTimeLabels(['launch' => '<b>Launch Opens</b>'])['launch'],
         'Launch Opens',
@@ -85,6 +101,12 @@ try {
         do_shortcode('Registration closes [bckfc_registration_closes].'),
         'Registration closes March 19, 2027 at 8:00 PM.',
         'Registration deadline in event timezone',
+    );
+
+    $check(
+        do_shortcode('[bckfc_registration_closes format="short"]'),
+        'Mar 19, 2027 AT 8:00 PM',
+        'Short registration deadline in event timezone',
     );
 
     foreach (array_keys($times) as $index => $type) {
@@ -135,8 +157,10 @@ try {
     );
 
     $GLOBALS['post'] = $events[1];
+    $check(do_shortcode('[bckfc_size_limits]'), '', 'No limits on second event');
     $check(do_shortcode('[bckfc_event_time type="lines_in"]'), 'TBD', 'Unknown time displays TBD');
     $check(do_shortcode('[bckfc_registration_closes]'), '', 'Unset registration deadline');
+    $check(do_shortcode('[bckfc_registration_closes format="short"]'), '', 'Unset short registration deadline');
     $check(
         do_shortcode('[bckfc_event_date]'),
         esc_html(tribe_get_start_date($events[1]->ID, false, 'F j, Y')),
@@ -161,13 +185,13 @@ try {
     $GLOBALS['post'] = null;
     $check(
         do_shortcode(
-            '[bckfc_event_time type="scales_close"][bckfc_event_location type="weigh_in"][bckfc_event_date][bckfc_registration_closes]',
+            '[bckfc_event_time type="scales_close"][bckfc_event_location type="weigh_in"][bckfc_event_date][bckfc_registration_closes][bckfc_size_limits]',
         ),
         '',
         'No current event',
     );
 
-    echo "Event date/time/location shortcodes and Avada accordion checks passed.\n";
+    echo "Event date/time/location/size-limit shortcodes and Avada accordion checks passed.\n";
 } finally {
     remove_filter('get_post_metadata', $metadata, 10);
     $GLOBALS['post'] = $previousPost;

@@ -106,6 +106,7 @@ final class TournamentSettingsEditor
         echo '<table class="widefat striped"><thead><tr><th>Date</th><th>Shortcode</th><th>Example Output</th></tr></thead><tbody>';
         echo '<tr><td>Event Date</td><td><code>[bckfc_event_date]</code></td><td>March 20, 2027</td></tr>';
         echo '<tr><td>Registration Closes</td><td><code>[bckfc_registration_closes]</code></td><td>March 19, 2027 at 8:00 PM</td></tr>';
+        echo '<tr><td>Registration Closes (Short)</td><td><code>[bckfc_registration_closes format="short"]</code></td><td>Mar 19, 2027 AT 8:00 PM</td></tr>';
         echo '</tbody></table>';
         echo '<p><strong>Example:</strong> Write <code>Registration closes [bckfc_registration_closes].</code> Anglers will see: <strong>Registration closes March 19, 2027 at 8:00 PM.</strong></p>';
         echo '<p class="description">Event Date uses the event’s start date. Registration Closes uses the event timezone and displays nothing when unset. Save date changes before previewing.</p>';
@@ -178,6 +179,51 @@ final class TournamentSettingsEditor
 
         echo '</tbody></table>';
         echo '<p class="description">Save time changes before previewing. TBD displays as TBD; a blank time leaves an empty space in the sentence.</p>';
+    }
+
+    public static function renderEventSizeLimits(int $eventId): void
+    {
+        $rows = TournamentSettings::getEventSizeLimits($eventId);
+        ?>
+        <div data-bckfc-size-limits>
+            <p>Enter each species and its tournament size limits. Minimum and Maximum accept text, such as “13″” or “Only 2 over 20″”.</p>
+            <input type="hidden" name="bckfc_event[size_limits]" value="">
+            <table class="widefat striped">
+                <thead><tr>
+                    <th scope="col">Species</th>
+                    <th scope="col">Minimum</th>
+                    <th scope="col">Maximum</th>
+                    <th scope="col"><span class="screen-reader-text">Actions</span></th>
+                </tr></thead>
+                <tbody>
+                    <?php foreach ($rows as $index => $row): ?>
+                        <?php self::renderSizeLimitRow((string) $index, $row); ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            <p><button type="button" class="button" data-bckfc-add-size-limit>Add Species</button></p>
+            <template><?php self::renderSizeLimitRow('__index__', []); ?></template>
+        </div>
+        <h3>Using Size Limits in Event Content</h3>
+        <p>Paste <code>[bckfc_size_limits]</code> into event content or an accordion to display a Species, Minimum and Maximum table. It uses the limits saved on that event, so the same saved content works across events.</p>
+        <p class="description">Save size-limit changes before previewing. If no species are entered, the shortcode displays nothing.</p>
+        <?php
+    }
+
+    private static function renderSizeLimitRow(string $index, array $row): void
+    {
+        ?>
+        <tr>
+            <?php foreach (['species' => 'Species', 'minimum' => 'Minimum', 'maximum' => 'Maximum'] as $field => $label): ?>
+                <td>
+                    <input type="text" class="regular-text" aria-label="<?= esc_attr($label) ?>"
+                        name="bckfc_event[size_limits][<?= esc_attr($index) ?>][<?= esc_attr($field) ?>]"
+                        value="<?= esc_attr($row[$field] ?? '') ?>">
+                </td>
+            <?php endforeach; ?>
+            <td><button type="button" class="button" data-bckfc-remove-size-limit>Remove</button></td>
+        </tr>
+        <?php
     }
 
     public static function renderTournamentLocations(int $eventId): void

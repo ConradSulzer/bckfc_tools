@@ -120,6 +120,14 @@ final class TournamentSettings
 
     update_post_meta($id, '_bckfc_format', $format);
 
+    if (isset($input['size_limits'])) {
+      update_post_meta(
+        $id,
+        '_bckfc_size_limits',
+        self::sanitizeSizeLimits($input['size_limits']),
+      );
+    }
+
     if ($times !== null) {
       update_post_meta($id, '_bckfc_times', $times);
     }
@@ -152,6 +160,34 @@ final class TournamentSettings
     $values = get_post_meta($eventId, '_bckfc_times', false);
 
     return self::normalizeEventTimes($values[0] ?? []);
+  }
+
+  /** Ordered rows containing species, minimum and maximum as display text. */
+  public static function getEventSizeLimits(int $eventId): array
+  {
+    return self::sanitizeSizeLimits(get_post_meta($eventId, '_bckfc_size_limits', true));
+  }
+
+  public static function sanitizeSizeLimits($input): array
+  {
+    $rows = [];
+
+    foreach (is_array($input) ? $input : [] as $row) {
+      $fields = [];
+
+      foreach (['species', 'minimum', 'maximum'] as $field) {
+        $fields[$field] = is_string($row[$field] ?? null)
+          ? sanitize_text_field($row[$field])
+          : '';
+      }
+
+      // An unused editor row should not create an empty limit on the event.
+      if (implode('', $fields) !== '') {
+        $rows[] = $fields;
+      }
+    }
+
+    return $rows;
   }
 
   public static function getEventTimeLabels(int $eventId): array

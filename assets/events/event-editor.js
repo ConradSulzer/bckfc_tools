@@ -20,6 +20,31 @@
 
   updateChampionshipVisibility();
 
+  document.querySelectorAll('[data-bckfc-size-limits]').forEach((editor) => {
+    const rows = editor.querySelector('tbody');
+    const template = editor.querySelector('template');
+    let nextIndex = rows.children.length;
+
+    editor.querySelector('[data-bckfc-add-size-limit]').addEventListener('click', () => {
+      const row = template.content.cloneNode(true);
+
+      row.querySelectorAll('input').forEach((input) => {
+        input.name = input.name.replace('__index__', nextIndex);
+      });
+
+      nextIndex += 1;
+      rows.append(row);
+      rows.lastElementChild.querySelector('input').focus();
+    });
+
+    rows.addEventListener('click', (event) => {
+      if (event.target.closest('[data-bckfc-remove-size-limit]')) {
+        event.target.closest('tr').remove();
+        editor.querySelector('[data-bckfc-add-size-limit]').focus();
+      }
+    });
+  });
+
   document.querySelectorAll('[data-bckfc-time-tbd]').forEach((checkbox) => {
     const input = document.getElementById(checkbox.dataset.bckfcTimeTbd);
 

@@ -27,6 +27,7 @@ final class EventSettingsPanel
       'general' => 'General',
       'locations' => 'Locations',
       'times' => 'Times',
+      'size-limits' => 'Size Limits',
       'registration' => 'Registration',
     ]; ?>
     <div class="bckfc-event-editor">
@@ -50,6 +51,9 @@ final class EventSettingsPanel
         </div>
         <div role="tabpanel" id="bckfc-panel-times" aria-labelledby="bckfc-tab-times" hidden>
           <?php TournamentSettingsEditor::renderTournamentTimes($post->ID); ?>
+        </div>
+        <div role="tabpanel" id="bckfc-panel-size-limits" aria-labelledby="bckfc-tab-size-limits" hidden>
+          <?php TournamentSettingsEditor::renderEventSizeLimits($post->ID); ?>
         </div>
         <div role="tabpanel" id="bckfc-panel-registration" aria-labelledby="bckfc-tab-registration" hidden>
           <table class="form-table">
