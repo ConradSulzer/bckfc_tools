@@ -115,3 +115,38 @@ These values supply the Categories footer and the size-limit table shortcodes us
 Enable **Require Login to Purchase Tickets** when anglers must sign in before buying. It applies to every ticket for this event and blocks purchases while logged out. Leave it unchecked when login is not required.
 
 Requiring login does not prevent repeat purchases or collect answers to custom attendee questions. Set any required attendee questions in the Tickets editor.
+
+## Building the Event Content
+
+Use **Avada Builder** inside the event editor to arrange the content anglers will see. Start with saved content from the **Library** where available, then edit it for this event. You can also add components individually when you need another section.
+
+### Layouts, Containers, and Components
+
+- **The event layout** provides the surrounding page structure and ticket section. You do not need to add a ticket picker to the event content. Tribe does this automatically.
+- **Containers** hold sections of content, with columns inside them to arrange the components.
+- **Components**, called **Elements** in Avada, provide the content inside those columns. Our custom elements include **BCKFC Header**, **BCKFC Highlights**, **BCKFC Categories**, and **BCKFC Times and Locations**. Rules use Avada's native Toggles/accordion element.
+- **The Library** holds saved content you can insert again, from a single component to a complete page of containers.
+
+### Assembling the Page
+
+1. Open **Avada Builder** in the event editor.
+2. Load a saved starting template from **Library → Templates**, or use **Add Container → Library Containers** to insert a saved section. When building a new section, add a container, choose its columns, and use **Add Element** to choose a component.
+3. Open each component's settings and update its text, images, and links for this event. Components that read BCKFC settings use the values saved on this event.
+4. Add, remove, or reorder sections to suit the event. Keep the header and important information near the top, with detailed explanations and rules below.
+5. Save the event and preview it on desktop and phone. Check the links and any text copied from another event.
+
+Saved containers preserve their structure and styling, making them a useful starting point when you want a consistent section. See [Avada's Library guide](https://avada.com/documentation/how-to-use-the-avada-builder-library/) for its save and load controls.
+
+### Reusing Content Without Changing Other Events
+
+Save event sections as **non-global** items: leave **Save as Global** unchecked. Each inserted copy can then be edited independently. Changing or deleting the saved Library original does not change those event copies. Global items remain linked across the places they are used. [Avada's Library documentation](https://avada.com/documentation/how-to-use-the-avada-builder-library/)
+
+For rules, maintain a current saved starting copy, insert it into an event, and remove anything that does not apply. Later changes to the saved rules do not update existing events, including future events already created from an earlier copy.
+
+Shortcodes in a copied section still read that event's settings. Updating an event's Scales Close time, for example, changes that time wherever its shortcode appears in the event.
+
+### Saving Your Own Event Starting Point
+
+Once you have arranged content you want to reuse for similar events, use **Save Page Layout** in the Builder toolbar. Give it a descriptive name so you can find it under **Library → Templates**. This saves a content starting point, not the surrounding Avada layout assignment or a replacement for filling in the event settings and tickets.
+
+When loading a saved template, Avada lets you replace the current content or insert it above or below what is already there. Choose carefully if you have already started editing the event. Review copied text, images, and links each time you reuse it. [Avada's page-template guide](https://avada.com/documentation/avada-builder-library-page-templates/)
