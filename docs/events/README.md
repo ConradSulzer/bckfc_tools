@@ -65,4 +65,53 @@ Under the new design the native **Venue** field is no longer used in the event p
 
 Use the **Tickets** editor to create the tickets being sold on the club website and set their prices, availability, and sale dates. Ticket sale dates are separate from the event's Start/End fields and the announced **Registration Closes** deadline in BCKFC settings.
 
-The **bckfc_tools** plugin adds a new field in the Tickets settings, **BCKFC Type**. This allows us to classify tickets to help with ticket exporting as well as with finance tracking. You should pick the appropriate Type for each ticket you create. 
+The **bckfc_tools** plugin adds a new field in the Tickets settings, **BCKFC Type**. This allows us to classify tickets to help with ticket exporting as well as with finance tracking. You should pick the appropriate Type for each ticket you create.
+
+## BCKFC Event Settings
+
+Find **BCKFC Event Settings** in the event editor. This panel holds the shared information used throughout the event page and by other club tools. Fill in what applies to the event, then **Save Draft** or **Update** before previewing changes.
+
+### Using Shortcodes
+
+Shortcodes insert saved event information from the current event into text or components. For example, anywhere you need to reference the **Scales Close** time, use the supplied shortcode instead. This will keep the time consistent throughout the event page. Now, if the time changes you only have to update it in one place instead of hunting for references to that time.
+
+This works in reusable components as well. If you create a component in Avada builder that reference a shortcode and save that component so it is reusable in other events, the shortcode will correctly display the information for each event you used it in. Example, a rules section can use a shortcode for Scales Close instead of a typed time. Reuse that section in another event and it displays that event's time automatically.
+
+The settings tabs include shortcode examples you can copy where available. Using a shortcode for a blank setting displays nothing, so check anywhere that uses a shortcode that references optional values.
+
+### General
+
+- **Tournament Format:** Choose Weigh-in or CPR/CPS. Leave Not Set when neither applies or the format is undecided.
+- **Championship Series:** Select the yearly series, or None if the event is not part of one. This helps other tools track this event accordingly. This also assigns a corresponding event category used by other tools and Wordpress to render events in certain views.
+- **This event is the Championship:** Check only for the championship itself, not every championship series tournament. Selecting None for the series clears this flag if it was previously set incorrectly. This setting is useful for other tools to help us distinguish the championship from other events in the series.
+- **Registration Closes:** Optional announced deadline, using the event's timezone. This does not stop ticket sales; set ticket sale end times separately in the Tickets editor. This is just used for referencing registration end times throughout the event page.
+
+### Locations
+
+Enter **Fishing / Launch** and **Weigh-In / Awards** separately. Leave a location empty if it does not apply.
+
+- **Name** and **Location** display together, such as **Delta Marina · Buras**. Either can stand alone. For regional fishing, you might leave Name blank and enter **Terrebonne Parish** as Location.
+- **Address or Coordinates** is optional and supplies a destination for directions. Leave it blank when there is no specific destination.
+- **Notes** is optional space for launch instructions, boundaries, or arrival details.
+
+The header uses Fishing / Launch for its location. These fields do not populate the native Venue setting.
+
+### Times
+
+Enter the times that apply: **Launch, Lines In, Lines Out, Submission Cutoff, Scales Open, Scales Close, and Awards Start**.
+
+Select **TBD** when a time is not decided yet. Leave a time blank when it is not needed. The times overview follows the order shown in the panel.
+
+**Display Label** is optional. Leave it blank to use the normal label, or enter something more specific, such as **Shotgun Launch** for Launch. Changing the label does not change which shortcode references that time.
+
+### Size Limits
+
+Click **Add Species**, then enter its **Species**, **Minimum**, and **Maximum**. The limits accept text, so you can include qualifications rather than only numbers. Leave unused fields blank and remove rows that do not apply.
+
+These values supply the Categories footer and the size-limit table shortcodes used in the Categories and Rules components. Enter the limits once here; describe stringer composition and scoring in the event content.
+
+### Registration
+
+Enable **Require Login to Purchase Tickets** when anglers must sign in before buying. It applies to every ticket for this event and blocks purchases while logged out. Leave it unchecked when login is not required.
+
+Requiring login does not prevent repeat purchases or collect answers to custom attendee questions. Set any required attendee questions in the Tickets editor.
