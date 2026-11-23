@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: BCKFC Tools
- * Description: Internal club tools, including Event Tickets exports for Rodeo.
- * Version: 0.1.0
+ * Description: Internal club tools.
+ * Version: 0.2.0
  * Requires PHP: 8.2
  * Author: Conrad Sulzer
  */
